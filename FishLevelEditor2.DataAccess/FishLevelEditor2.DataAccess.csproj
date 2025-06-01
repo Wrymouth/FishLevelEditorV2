@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Content\editorcfg.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FishLevelEditor2.Logic\FishLevelEditor2.Logic.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\editorcfg.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>
