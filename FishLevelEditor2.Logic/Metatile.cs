@@ -12,6 +12,7 @@
         }
 
         public string Name { get; set; }
+        public Type MetatileType { get; set; }
         public uint[] Tiles { get; set; }
 
     }

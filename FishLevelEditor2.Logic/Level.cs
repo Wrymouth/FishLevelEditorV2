@@ -19,7 +19,8 @@ namespace FishLevelEditor2.Logic
 
         public LevelType Type { get; set; }
 
-        public List<List<ScreenMetatile>> Metatiles { get; set; }
+        public List<List<ScreenMetatile>> ScreenMetatiles { get; set; }
+        public List<Metatile> MetatileDefinitions { get; set; }
         public ObservableCollection<LevelObject> Objects { get; set; }
         public ObservableCollection<LevelEntry> Entries { get; set; }
         public ObservableCollection<LevelExit> Exits { get; set; }

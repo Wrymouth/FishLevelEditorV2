@@ -23,6 +23,8 @@ public partial class App : Application
             Session.Config = new(new ConfigRepository());
             if (!(string.IsNullOrWhiteSpace(Session.Config.RecentProjectFilePath)))
             {
+                // unimplemented
+                // load most recent project from disk, load most recent level if available, open main editor with both
                 desktop.MainWindow = new MainWindow
                 {
                     DataContext = new MainViewModel()

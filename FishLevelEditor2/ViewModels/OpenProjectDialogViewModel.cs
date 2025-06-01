@@ -1,4 +1,5 @@
-﻿using FishLevelEditor2.Logic;
+﻿using FishLevelEditor2.DataAccess;
+using FishLevelEditor2.Logic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,16 +15,20 @@ namespace FishLevelEditor2.ViewModels
 
         public void CreateProject()
         {
-            Project project = new();
-            OpenProjectSuccess?.Invoke(
-                this,
-                new OpenProjectEventArgs(project)
-            );
+            Project project = new(new ProjectRepository());
+            OpenProject(project);
         }
 
         public void LoadProject()
         {
-            Project project = new();
+            string filePath = "";
+            Project project = new ProjectRepository().Load(filePath);
+            OpenProject(project);
+        }
+
+        public void OpenProject(Project project)
+        {
+            Session.Project = project;
             OpenProjectSuccess?.Invoke(
               this,
               new OpenProjectEventArgs(project)
