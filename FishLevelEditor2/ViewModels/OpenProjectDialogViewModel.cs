@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FishLevelEditor2.ViewModels
 {
-    public delegate void OpenProjectEventHandler(object sender, EventArgs e);
+    public delegate void OpenProjectEventHandler(object sender, OpenProjectEventArgs e);
     public class OpenProjectDialogViewModel : ViewModelBase
     {
         public event OpenProjectEventHandler OpenProjectSuccess;
@@ -19,9 +19,8 @@ namespace FishLevelEditor2.ViewModels
             OpenProject(project);
         }
 
-        public void LoadProject()
+        public void LoadProject(string filePath)
         {
-            string filePath = "";
             Project project = new ProjectRepository().Load(filePath);
             OpenProject(project);
         }

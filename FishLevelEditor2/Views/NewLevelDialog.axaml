@@ -1,0 +1,34 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:FishLevelEditor2.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="210"
+        Width="380" Height="210"
+        x:Class="FishLevelEditor2.NewLevelDialog"
+        x:DataType="vm:NewLevelDialogViewModel"
+        Title="New Level">
+  <StackPanel Margin="10">
+    <StackPanel Orientation="Horizontal" Margin="0,10,0,10" HorizontalAlignment="Center">
+      <Label>Name</Label>
+      <TextBox TextChanged="NameTextBox_TextChanged" Name="NameTextBox" Width="200" Margin="10,0,10,0"></TextBox>
+    </StackPanel>
+    <StackPanel Margin="0,10,0,10" Orientation="Horizontal" HorizontalAlignment="Center">
+      <Label>Type</Label>
+      <ComboBox Name="LevelTypeComboBox" Width="200">
+        <ComboBoxItem>Horizontal</ComboBoxItem>
+        <ComboBoxItem>Vertical</ComboBoxItem>
+        <ComboBoxItem>Large Horizonatal</ComboBoxItem>
+        <ComboBoxItem>Diagonal</ComboBoxItem>
+      </ComboBox>
+    </StackPanel>
+    <DockPanel>
+      <RadioButton Margin="5" VerticalAlignment="Top" HorizontalAlignment="Left" IsChecked="True" Name="NewMetatileSetRadioButton" GroupName="MetatileSetSelection">Create new metatile set</RadioButton>
+      <StackPanel HorizontalAlignment="Right" Margin="5">
+        <RadioButton IsCheckedChanged="OldMetatileSetRadioButton_IsCheckedChanged" Name="OldMetatileSetRadioButton" GroupName="MetatileSetSelection">Use existing metatile set: </RadioButton>
+        <ComboBox Margin="0,10,0,0" Name="MetatileSetComboBox" IsEnabled="False"></ComboBox>
+      </StackPanel>
+    </DockPanel>
+    <Button Margin="10" ToolTip.Tip="Level name cannot be empty" Name="CreateLevelButton" Click="CreateLevelButton_Click" IsEnabled="False">Create</Button>
+  </StackPanel>
+</Window>

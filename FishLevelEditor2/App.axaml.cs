@@ -27,13 +27,13 @@ public partial class App : Application
                 // load most recent project from disk, load most recent level if available, open main editor with both
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainViewModel()
+                    DataContext = new MainViewModel(new Level("", Level.LevelType.Horizontal, 0))
                 };
             }
             else
             {
                 var opdViewModel = new OpenProjectDialogViewModel();
-                var mainWindowViewModel = new MainViewModel();
+                var mainWindow = new MainWindow();
                 OpenProjectDialog openProjectDialog = new()
                 {
                     DataContext = opdViewModel
@@ -42,13 +42,24 @@ public partial class App : Application
                 openProjectDialog.Show();
                 opdViewModel.OpenProjectSuccess += (sender, args) =>
                 {
-                    var mainWindow = new MainWindow()
+                    Project project = args.Project;
+                    var lsdViewModel = new LevelSelectDialogViewModel(project);
+                    var levelSelectDialog = new LevelSelectDialog()
                     {
-                        DataContext = mainWindowViewModel
+                        DataContext = lsdViewModel
                     };
-                    mainWindow.Show();
+                    levelSelectDialog.Show();
+                    lsdViewModel.LoadLevelSuccess += (sender, args) =>
+                    {
+                        int levelIndex = args.LevelIndex;
+                        mainWindow.DataContext = new MainViewModel(Session.Project.Levels[levelIndex]);
+                        desktop.MainWindow = mainWindow;
+                        mainWindow.Show();
+                        levelSelectDialog.Close();
+                    };
                     openProjectDialog.Close();
-                    desktop.MainWindow = mainWindow;
+                    desktop.MainWindow = levelSelectDialog;
+
                 };
             }
         }
@@ -56,7 +67,7 @@ public partial class App : Application
         {
             singleViewPlatform.MainView = new MainView
             {
-                DataContext = new MainViewModel()
+                DataContext = new MainViewModel(new Level("", Level.LevelType.Horizontal, 0))
             };
         }
 

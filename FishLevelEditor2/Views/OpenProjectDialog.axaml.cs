@@ -14,13 +14,15 @@ public partial class OpenProjectDialog : Window
 
     private void NewProjectButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        var opdViewModel = this.DataContext as OpenProjectDialogViewModel;
+        var opdViewModel = DataContext as OpenProjectDialogViewModel;
         opdViewModel.CreateProject();
     }
 
     private void LoadProjectButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        var opdViewModel = this.DataContext as OpenProjectDialogViewModel;
-        opdViewModel.LoadProject();
+        // unimplemented, open file dialog
+        string filePath = "";
+        var opdViewModel = DataContext as OpenProjectDialogViewModel;
+        opdViewModel.LoadProject(filePath);
     }
 }

@@ -1,0 +1,41 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:FishLevelEditor2.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="500"
+        Width="350" Height="500"
+        x:Class="FishLevelEditor2.LevelSelectDialog"
+        x:DataType="vm:LevelSelectDialogViewModel"
+        CanResize="False"
+        Title="LevelSelectDialog">
+  <Design.DataContext>
+    <vm:OpenProjectDialogViewModel />
+  </Design.DataContext>
+  <TabControl>
+    <TabItem Header="Levels">
+      <StackPanel Orientation="Vertical" Margin="20">
+        <TextBlock HorizontalAlignment="Center" FontSize="24" Padding="20">Select a level</TextBlock>
+        <ListBox SelectionChanged="LevelsListBox_SelectionChanged" Height="300" Name="LevelsListBox" ItemsSource="{Binding Project.Levels}">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <Border BorderThickness="1" Padding="4" Height="70">
+                <TextBlock VerticalAlignment="Center" Text="{Binding Name}"/>
+              </Border>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+        <DockPanel>
+          <Button Click="CreateLevelButton_Click" HorizontalAlignment="Right" Margin="0,10,0,0" Width="90" Name="AddLevelButton">Create Level</Button>
+          <Button IsEnabled="False" Click="LoadLevelButton_Click" HorizontalAlignment="Right" Margin="0,10,0,0" Width="90" Name="LoadLevelButton">Load Level</Button>
+        </DockPanel>
+      </StackPanel>
+    </TabItem>
+    <TabItem Header="CHR Data">
+      
+    </TabItem>
+    <TabItem Header="Metatiles">
+      
+    </TabItem>
+  </TabControl>
+</Window>

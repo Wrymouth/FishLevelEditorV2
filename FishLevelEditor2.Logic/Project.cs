@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,8 @@ namespace FishLevelEditor2.Logic
 {
     public class Project
     {
-        public List<Level> Levels { get; set; }
+        public ObservableCollection<Level> Levels { get; set; }
+        public List<MetatileSet> MetatileSets { get; set; }
 
         public int MostRecentLevelIndex { get; set; }
         public List<CHRBank> CHRBanks { get; set; }
@@ -19,14 +21,16 @@ namespace FishLevelEditor2.Logic
         {
             ProjectRepository = projectRepository;
             Levels = [];
+            MetatileSets = [];
             CHRBanks = [];
         }
 
-        public Project(IProjectRepository projectRepository, List<Level> levels, List<CHRBank> chrBanks)
+        public Project(IProjectRepository projectRepository, ObservableCollection<Level> levels, List<CHRBank> chrBanks, List<MetatileSet> metatileSets)
         {
             ProjectRepository = projectRepository;
             Levels = levels;
             CHRBanks = chrBanks;
+            MetatileSets = metatileSets;
         }
     }
 }
