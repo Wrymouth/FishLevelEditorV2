@@ -5,6 +5,7 @@ using FishLevelEditor2.DataAccess;
 using FishLevelEditor2.Logic;
 using FishLevelEditor2.ViewModels;
 using FishLevelEditor2.Views;
+using System;
 
 namespace FishLevelEditor2;
 
@@ -21,19 +22,16 @@ public partial class App : Application
         {
             // check if a project already exists in the config
             Session.Config = new(new ConfigRepository());
+            Session.MasterPalette = new(Session.Config.MasterPaletteFilePath);
             if (!(string.IsNullOrWhiteSpace(Session.Config.RecentProjectFilePath)))
             {
                 // unimplemented
+                throw new NotImplementedException("Loading from file is not implemented yet");
                 // load most recent project from disk, load most recent level if available, open main editor with both
-                desktop.MainWindow = new MainWindow
-                {
-                    DataContext = new MainViewModel(new Level("", Level.LevelType.Horizontal, 0))
-                };
             }
             else
             {
                 var opdViewModel = new OpenProjectDialogViewModel();
-                var mainWindow = new MainWindow();
                 OpenProjectDialog openProjectDialog = new()
                 {
                     DataContext = opdViewModel
@@ -43,7 +41,7 @@ public partial class App : Application
                 opdViewModel.OpenProjectSuccess += (sender, args) =>
                 {
                     Project project = args.Project;
-                    var lsdViewModel = new LevelSelectDialogViewModel(project);
+                    var lsdViewModel = new LevelSelectDialogViewModel();
                     var levelSelectDialog = new LevelSelectDialog()
                     {
                         DataContext = lsdViewModel
@@ -51,8 +49,7 @@ public partial class App : Application
                     levelSelectDialog.Show();
                     lsdViewModel.LoadLevelSuccess += (sender, args) =>
                     {
-                        int levelIndex = args.LevelIndex;
-                        mainWindow.DataContext = new MainViewModel(Session.Project.Levels[levelIndex]);
+                        var mainWindow = new MainWindow(args.LevelIndex);
                         desktop.MainWindow = mainWindow;
                         mainWindow.Show();
                         levelSelectDialog.Close();
@@ -65,10 +62,7 @@ public partial class App : Application
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
-            singleViewPlatform.MainView = new MainView
-            {
-                DataContext = new MainViewModel(new Level("", Level.LevelType.Horizontal, 0))
-            };
+            throw new NotImplementedException();
         }
 
         base.OnFrameworkInitializationCompleted();

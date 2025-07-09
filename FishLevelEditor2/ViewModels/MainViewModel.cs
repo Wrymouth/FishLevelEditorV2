@@ -5,10 +5,15 @@ namespace FishLevelEditor2.ViewModels;
 public class MainViewModel : ViewModelBase
 {
     public Level Level { get; set; }
-    public string Greeting => "Welcome to Avalonia! This is my added text.";
+    public CHRBankViewModel CHRBankViewModel { get; set; }
 
     public MainViewModel(Level level)
     {
         Level = level;
+        CHRBankViewModel = new(Level.BackgroundCHR);
+    }
+
+    public MainViewModel()
+    {
     }
 }

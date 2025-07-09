@@ -4,9 +4,61 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:FishLevelEditor2.Views"
-        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="675"
+        Width="1200" Height="675"
         x:Class="FishLevelEditor2.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
+        CanResize="False"
         Title="FishLevelEditor2">
-        <views:MainView />
+  <DockPanel>
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="62.5*"/>
+        <ColumnDefinition Width="37.5*"/>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="20"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="20"/>
+      </Grid.RowDefinitions>
+
+      <Menu Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" >
+        <MenuItem Header="File"/>
+        <MenuItem Header="Settings"/>
+      </Menu>
+      <SKBitmapControl Name="MainLevelView">
+
+      </SKBitmapControl>
+      <DockPanel Grid.Column="1" Grid.Row="1">
+        <TabControl>
+          <TabItem Header="Metatiles">
+            <StackPanel>
+              <!--Master Palette-->
+              <!--Palettes-->
+              <!--Metatile List-->
+              <!--Selected Metatile-->
+              <Separator/>
+              <Separator/>
+              <HeaderedContentControl Header="CHR">
+                <StackPanel>
+                  <SKBitmapControl Width="256" Height="256" Name="CHRBitmap"/>
+                  <Button Click="ReplaceCHRButton_Click" Name="ReplaceCHRButton" HorizontalAlignment="Center" Width="100">Replace</Button>
+                </StackPanel>
+              </HeaderedContentControl>
+            </StackPanel>
+          </TabItem>
+          <TabItem Header="Objects">
+
+          </TabItem>
+          <TabItem Header="Entries">
+
+          </TabItem>
+        </TabControl>
+      </DockPanel>
+
+      <DockPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+        <Label Name="LogsLabel"/>
+      </DockPanel>
+    </Grid>
+  </DockPanel>
 </Window>

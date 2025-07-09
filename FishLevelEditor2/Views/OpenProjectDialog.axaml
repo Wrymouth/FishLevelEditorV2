@@ -15,6 +15,6 @@
   <StackPanel Height="" VerticalAlignment="Center" Spacing="10">
     <TextBlock HorizontalAlignment="Center" Grid.ColumnSpan="2" Grid.Row="0">Welcome to Fish Level Editor v2!</TextBlock>
     <Button Click="NewProjectButton_Click" Width="100" Name="NewProjectButton" HorizontalAlignment="Center" Content="New Project"></Button>
-    <Button Click="LoadProjectButton_Click" Width="100" Name="LoadProjectButton" HorizontalAlignment="Center" Content="Load Project"></Button>
+    <Button Click="LoadProjectButton_Click" Width="100" IsEnabled="False" ToolTip.Tip="Not yet implemented" Name="LoadProjectButton" HorizontalAlignment="Center" Content="Load Project"></Button>
   </StackPanel>
 </Window>

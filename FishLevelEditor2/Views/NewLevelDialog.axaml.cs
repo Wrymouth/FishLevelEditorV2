@@ -1,10 +1,8 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using Avalonia.Platform.Storage;
 using FishLevelEditor2.Logic;
 using FishLevelEditor2.ViewModels;
 using System;
-using System.Linq;
 
 namespace FishLevelEditor2;
 
@@ -16,10 +14,49 @@ public partial class NewLevelDialog : Window
         ToolTip.SetShowOnDisabled(CreateLevelButton, true);
     }
 
+    private void DisableCreateLevelButton(string message)
+    {
+        CreateLevelButton.IsEnabled = false;
+        CreateLevelButton.SetValue(ToolTip.TipProperty, message);
+    }
+
+    private void ValidateLevelDataInputs()
+    {
+        if (string.IsNullOrWhiteSpace(NameTextBox.Text))
+        {
+            DisableCreateLevelButton("Level name cannot be empty");
+            return;
+        }
+        // TODO also check if the CHR file is valid
+        if (string.IsNullOrWhiteSpace(FilePathTextBox.Text))
+        {
+            DisableCreateLevelButton("Level requires CHR data");
+            return;
+        }
+        if (WidthNumberInput.Value is null || !WidthNumberInput.Value.HasValue)
+        {
+            DisableCreateLevelButton("Width must be a valid value");
+            return;
+        }
+        if (HeightNumberInput.Value is null || !HeightNumberInput.Value.HasValue)
+        {
+            DisableCreateLevelButton("Height must be a valid value");
+            return;
+        }
+
+        CreateLevelButton.ClearValue(ToolTip.TipProperty);
+        CreateLevelButton.IsEnabled = true;
+    }
+
     private void CreateLevelButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         NewLevelDialogViewModel nldViewModel = DataContext as NewLevelDialogViewModel;
+
         string levelName = NameTextBox.Text;
+        string chrFilePath = FilePathTextBox.Text;
+        int initialWidth = decimal.ToInt32((decimal)WidthNumberInput.Value);
+        int initialHeight = decimal.ToInt32((decimal)HeightNumberInput.Value);
+
         int metatileSetIndex = 0;
         if ((bool)NewMetatileSetRadioButton.IsChecked)
         {
@@ -28,9 +65,10 @@ public partial class NewLevelDialog : Window
         }
         else if ((bool)OldMetatileSetRadioButton.IsChecked)
         {
-
+            throw new NotImplementedException("Reusing metatile sets is unimplemented");
         }
-        nldViewModel.CreateLevel(levelName, (Level.LevelType)LevelTypeComboBox.SelectedIndex, metatileSetIndex);
+
+        nldViewModel.CreateLevel(levelName, chrFilePath, initialWidth, initialHeight, metatileSetIndex);
         nldViewModel.Result = NewLevelDialogViewModel.ModalResult.Ok;
         Close();
     }
@@ -40,16 +78,37 @@ public partial class NewLevelDialog : Window
         MetatileSetComboBox.IsEnabled = OldMetatileSetRadioButton.IsChecked ?? false;
     }
 
-    private void NameTextBox_TextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e)
+    private void LevelDialogTextBox_TextChanged(object? sender, TextChangedEventArgs e)
     {
-        if (!string.IsNullOrWhiteSpace(NameTextBox.Text))
+        if (IsInitialized)
         {
-            CreateLevelButton.IsEnabled = true;
-            CreateLevelButton.ClearValue(ToolTip.TipProperty);
-        } else
+            ValidateLevelDataInputs();
+        }
+    }
+
+    private async void BrowseCHRFileButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        // Get top level from the current control. Alternatively, you can use Window reference instead.
+        var topLevel = GetTopLevel(this);
+
+        // Start async operation to open the dialog.
+        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            CreateLevelButton.IsEnabled = false;
-            CreateLevelButton.SetValue(ToolTip.TipProperty, "Level name cannot be empty");
+            Title = "Open CHR file",
+            AllowMultiple = false
+        });
+
+        if (files.Count == 1)
+        {
+            FilePathTextBox.Text = files[0].Path.AbsolutePath;
+        }
+    }
+
+    private void NumericUpDown_ValueChanged(object? sender, NumericUpDownValueChangedEventArgs e)
+    {
+        if (IsInitialized)
+        {
+            ValidateLevelDataInputs();
         }
     }
 }

@@ -13,7 +13,6 @@ namespace FishLevelEditor2.Logic
         public List<MetatileSet> MetatileSets { get; set; }
 
         public int MostRecentLevelIndex { get; set; }
-        public List<CHRBank> CHRBanks { get; set; }
 
         public IProjectRepository ProjectRepository { get; set; }
 
@@ -22,14 +21,12 @@ namespace FishLevelEditor2.Logic
             ProjectRepository = projectRepository;
             Levels = [];
             MetatileSets = [];
-            CHRBanks = [];
         }
 
-        public Project(IProjectRepository projectRepository, ObservableCollection<Level> levels, List<CHRBank> chrBanks, List<MetatileSet> metatileSets)
+        public Project(IProjectRepository projectRepository, ObservableCollection<Level> levels, ObservableCollection<CHRBank> chrBanks, List<MetatileSet> metatileSets)
         {
             ProjectRepository = projectRepository;
             Levels = levels;
-            CHRBanks = chrBanks;
             MetatileSets = metatileSets;
         }
     }

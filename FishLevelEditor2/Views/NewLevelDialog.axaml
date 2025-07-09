@@ -3,24 +3,28 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:FishLevelEditor2.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="210"
-        Width="380" Height="210"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="320"
+        Width="480" Height="480"
         x:Class="FishLevelEditor2.NewLevelDialog"
         x:DataType="vm:NewLevelDialogViewModel"
         Title="New Level">
   <StackPanel Margin="10">
     <StackPanel Orientation="Horizontal" Margin="0,10,0,10" HorizontalAlignment="Center">
-      <Label>Name</Label>
-      <TextBox TextChanged="NameTextBox_TextChanged" Name="NameTextBox" Width="200" Margin="10,0,10,0"></TextBox>
+      <Label VerticalAlignment="Center">Name</Label>
+      <TextBox TextChanged="LevelDialogTextBox_TextChanged" Name="NameTextBox" Width="200" Margin="10,0,10,0"></TextBox>
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Margin="0,10,0,10" HorizontalAlignment="Center">
+      <Label VerticalAlignment="Center">CHR path</Label>
+      <TextBox TextChanged="LevelDialogTextBox_TextChanged" Name="FilePathTextBox" Width="200" Margin="10,0,10,0"></TextBox>
+      <Button Name="BrowseCHRFileButton" Click="BrowseCHRFileButton_Click" Content="Browse..."/>
     </StackPanel>
     <StackPanel Margin="0,10,0,10" Orientation="Horizontal" HorizontalAlignment="Center">
-      <Label>Type</Label>
-      <ComboBox Name="LevelTypeComboBox" Width="200">
-        <ComboBoxItem>Horizontal</ComboBoxItem>
-        <ComboBoxItem>Vertical</ComboBoxItem>
-        <ComboBoxItem>Large Horizonatal</ComboBoxItem>
-        <ComboBoxItem>Diagonal</ComboBoxItem>
-      </ComboBox>
+      <Label HorizontalAlignment="Left" Width="150" VerticalAlignment="Center">Initial Height</Label>
+      <NumericUpDown Minimum="1" ValueChanged="NumericUpDown_ValueChanged" Name="HeightNumberInput" FormatString="0" Value="15" Width="60" />
+    </StackPanel>
+    <StackPanel Margin="0,10,0,10" Orientation="Horizontal" HorizontalAlignment="Center">
+      <Label HorizontalAlignment="Left" Width="150" VerticalAlignment="Center">Initial Width</Label>
+      <NumericUpDown Minimum="1" ValueChanged="NumericUpDown_ValueChanged" Name="WidthNumberInput" FormatString="0" Value="16" Width="60"/>
     </StackPanel>
     <DockPanel>
       <RadioButton Margin="5" VerticalAlignment="Top" HorizontalAlignment="Left" IsChecked="True" Name="NewMetatileSetRadioButton" GroupName="MetatileSetSelection">Create new metatile set</RadioButton>

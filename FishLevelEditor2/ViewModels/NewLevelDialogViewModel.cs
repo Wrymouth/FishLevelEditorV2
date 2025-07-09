@@ -9,7 +9,8 @@ namespace FishLevelEditor2.ViewModels
 {
     public class NewLevelDialogViewModel
     {
-        public enum ModalResult {
+        public enum ModalResult
+        {
             Ok,
             Cancel
         }
@@ -22,12 +23,9 @@ namespace FishLevelEditor2.ViewModels
             Result = ModalResult.Cancel;
         }
 
-        public void CreateLevel(string name, Level.LevelType levelType, int metatileSetIndex)
+        public void CreateLevel(string name, string chrFilePath, int startingWidth, int startingHeight, int metatileSetIndex)
         {
-            if (name is not null)
-            {
-                Level = new(name, levelType, metatileSetIndex);
-            }
+            Level = new(name, chrFilePath, startingWidth, startingHeight, metatileSetIndex);
         }
     }
 }

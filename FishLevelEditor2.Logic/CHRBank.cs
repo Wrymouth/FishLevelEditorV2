@@ -1,33 +1,46 @@
-﻿namespace FishLevelEditor2.Logic
+﻿using System.Numerics;
+
+namespace FishLevelEditor2.Logic
 {
     public class CHRBank
     {
         public string FilePath { get; set; }
+
+        public string FileName
+        {
+            get
+            {
+                return Path.GetFileName(FilePath);
+            }
+        }
         public int Size { get; set; }
 
-        public Tile[] Tiles { get; set; }
+        public List<Tile> Tiles { get; set; }
 
-        public CHRBank(string filePath, uint size)
+        public CHRBank(string filePath)
         {
             FilePath = filePath;
+            Tiles = [];
             Decode();
         }
 
         private void Decode()
         {
             const int ONE_KB = 1024;
-            const int AMOUNT_TILE_PIXELS = 64;
+            const int AMOUNT_PIXELS_PER_TILE = 64;
+            const int AMOUNT_TILES_PER_KB = 64;
             // Open the file to read from.
             byte[] chrBytes = File.ReadAllBytes(FilePath);
             uint tileIndex = 0;
             int chrIndex = 0;
-            FileInfo chrInfo = new FileInfo(FilePath);
+            FileInfo chrInfo = new(FilePath);
 
-            Size = (int) chrInfo.Length / ONE_KB;
+            Size = (int)chrInfo.Length;
+            int amountTiles = (Size / ONE_KB) * AMOUNT_TILES_PER_KB;
 
-            while (tileIndex < Size)
+            while (tileIndex < amountTiles)
             {
-                uint[] tilePixels = new uint[AMOUNT_TILE_PIXELS];
+                uint[] tilePixels = new uint[AMOUNT_PIXELS_PER_TILE];
 
                 for (int i = 0; i < 8; i++)
                 {
@@ -38,8 +51,8 @@
                     }
                 }
 
-                Tile t = new(tileIndex, tilePixels);
-                Tiles[tileIndex] = t;
+                Tile t = new(tilePixels);
+                Tiles.Add(t);
                 chrIndex += 16;
                 tileIndex++;
             }

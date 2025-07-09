@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace FishLevelEditor2.Logic
@@ -6,18 +7,16 @@ namespace FishLevelEditor2.Logic
     public class MasterPalette
     {
         const int AMOUNT_COLORS = 64;
-        public string FilePath { get; set; }
         public uint[] Colors { get; set; }
 
         public MasterPalette(string filePath)
         {
-            FilePath = filePath;
             Colors = new uint[AMOUNT_COLORS];
-            SetMasterPaletteFromFile();
+            SetMasterPaletteFromFile(filePath);
         }
-        private void SetMasterPaletteFromFile()
+        private void SetMasterPaletteFromFile(string filePath)
         {
-            FileStream fileStream = File.OpenRead(FilePath);
+            FileStream fileStream = File.OpenRead(filePath);
             for (int i = 0; i < AMOUNT_COLORS; i++)
             {
                 int streamTest = fileStream.ReadByte();

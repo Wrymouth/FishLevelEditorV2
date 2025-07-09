@@ -1,4 +1,5 @@
-﻿using FishLevelEditor2.Logic;
+﻿using FishLevelEditor2.DataAccess;
+using FishLevelEditor2.Logic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,12 @@ namespace FishLevelEditor2.ViewModels
     public class LevelSelectDialogViewModel : ViewModelBase
     {
         public event LoadLevelEventHandler LoadLevelSuccess;
+
         public Project Project { get; set; }
-        public LevelSelectDialogViewModel(Project project)
+
+        public LevelSelectDialogViewModel()
         {
-            Project = project;
+            Project = Session.Project;
         }
 
         public void LoadLevel(int levelIndex)

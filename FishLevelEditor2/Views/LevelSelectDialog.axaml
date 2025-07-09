@@ -9,9 +9,6 @@
         x:DataType="vm:LevelSelectDialogViewModel"
         CanResize="False"
         Title="LevelSelectDialog">
-  <Design.DataContext>
-    <vm:OpenProjectDialogViewModel />
-  </Design.DataContext>
   <TabControl>
     <TabItem Header="Levels">
       <StackPanel Orientation="Vertical" Margin="20">
@@ -31,11 +28,10 @@
         </DockPanel>
       </StackPanel>
     </TabItem>
-    <TabItem Header="CHR Data">
-      
-    </TabItem>
     <TabItem Header="Metatiles">
-      
+      <ListBox>
+
+      </ListBox>
     </TabItem>
   </TabControl>
 </Window>
