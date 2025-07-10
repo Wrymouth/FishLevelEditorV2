@@ -16,4 +16,10 @@ public class MainViewModel : ViewModelBase
         MetatileSetViewModel = new(Level.MetatileSet, Level.BackgroundCHR);
         SelectedMetatileViewModel = new(Level.MetatileSet.Metatiles[0], Level.BackgroundCHR);
     }
+
+    // empty constructor for previewer
+    public MainViewModel()
+    {
+        
+    }
 }

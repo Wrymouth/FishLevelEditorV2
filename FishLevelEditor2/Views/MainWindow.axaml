@@ -10,6 +10,9 @@
         Icon="/Assets/avalonia-logo.ico"
         CanResize="False"
         Title="FishLevelEditor2">
+  <Design.DataContext>
+    <vm:MainViewModel/>
+  </Design.DataContext>
   <DockPanel>
     <Grid>
       <Grid.ColumnDefinitions>
@@ -26,7 +29,7 @@
         <MenuItem Header="File"/>
         <MenuItem Header="Settings"/>
       </Menu>
-      <SKBitmapControl Name="MainLevelView">
+      <SKBitmapControl Grid.Column="0" Grid.Row="1" Name="MainLevelView">
 
       </SKBitmapControl>
       <DockPanel Grid.Column="1" Grid.Row="1">
@@ -41,14 +44,31 @@
                   <ScrollViewer Height="256">
                     <SKBitmapControl Width="256" Height="1024" Name="MetatileSetBitmap"/>
                   </ScrollViewer>
+                  <Button Name="AddMetatileButton" Content="+" Width="256" Click="AddMetatileButton_Click"/>
                 </StackPanel>
               </HeaderedContentControl>
               <Separator/>
               <!--Selected Metatile-->
-              <HeaderedContentControl>
-                <StackPanel>
+              <HeaderedContentControl Header="Selected Metatile">
+                <DockPanel>
                   <SKBitmapControl Width="32" Height="32" Name="SelectedMetatileBitmap"/>
-                </StackPanel>
+                  <StackPanel>
+                    <DockPanel>
+                      <Label Content="Name: "/>
+                      <TextBox Name="MetatileNameTextBox" TextChanged="MetatileNameTextBox_TextChanged" TextAlignment="Right" Padding="5,0,5,0" HorizontalAlignment="Right" MaxWidth="150" MinWidth="100"/>
+                    </DockPanel>
+                    <DockPanel>
+                      <Label Content="Type: " HorizontalAlignment="Left"/>
+                      <ComboBox SelectionChanged="MetatileTypeComboBox_SelectionChanged" Name="MetatileTypeComboBox" HorizontalAlignment="Right" MinWidth="100">
+                        <ComboBoxItem Content="Air" IsSelected="True"/>
+                        <ComboBoxItem Content="Solid"/>
+                        <ComboBoxItem Content="SemiSolid"/>
+                        <ComboBoxItem Content="Spike"/>
+                        <ComboBoxItem Content="Climb"/>
+                      </ComboBox>
+                    </DockPanel>
+                  </StackPanel>
+                </DockPanel>
               </HeaderedContentControl>
               <Separator/>
               <HeaderedContentControl Header="CHR">
