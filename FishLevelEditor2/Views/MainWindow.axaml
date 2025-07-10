@@ -35,9 +35,21 @@
             <StackPanel>
               <!--Master Palette-->
               <!--Palettes-->
-              <!--Metatile List-->
-              <!--Selected Metatile-->
+              <!--Metatile Set-->
+              <HeaderedContentControl Header="Metatile list">
+                <StackPanel>
+                  <ScrollViewer Height="256">
+                    <SKBitmapControl Width="256" Height="1024" Name="MetatileSetBitmap"/>
+                  </ScrollViewer>
+                </StackPanel>
+              </HeaderedContentControl>
               <Separator/>
+              <!--Selected Metatile-->
+              <HeaderedContentControl>
+                <StackPanel>
+                  <SKBitmapControl Width="32" Height="32" Name="SelectedMetatileBitmap"/>
+                </StackPanel>
+              </HeaderedContentControl>
               <Separator/>
               <HeaderedContentControl Header="CHR">
                 <StackPanel>

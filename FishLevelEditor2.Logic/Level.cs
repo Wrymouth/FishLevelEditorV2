@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -17,6 +18,15 @@ namespace FishLevelEditor2.Logic
         public int Height { get; set; }
 
         public int MetatileSetIndex { get; set; }
+
+        [JsonIgnore]
+        public MetatileSet MetatileSet
+        {
+            get
+            {
+                return Session.Project.MetatileSets[MetatileSetIndex];
+            }
+        }
         public Palette[] BackgroundPalettes { get; set; }
         public Palette[] ObjectPalettes { get; set; }
         public ObservableCollection<LevelObject> Objects { get; set; }

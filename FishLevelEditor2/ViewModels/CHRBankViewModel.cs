@@ -13,20 +13,20 @@ namespace FishLevelEditor2.ViewModels
         public const int CHR_IMAGE_WIDTH  = 128;
         public const int CHR_IMAGE_HEIGHT = 128;
         public CHRBank CHRBank { get; set; }
-        public EditorBitmap CHRBankBitmap { get; set; }
+        public CHRBasedBitmap CHRBankBitmap { get; set; }
         public CHRBankViewModel(CHRBank chrBank)
         {
             CHRBank = chrBank;
-            CHRBankBitmap = new(CHR_IMAGE_WIDTH, CHR_IMAGE_HEIGHT);
+            CHRBankBitmap = new(CHR_IMAGE_WIDTH, CHR_IMAGE_HEIGHT, chrBank);
         }
-        public void Display()
+        public void Display(Palette palette)
         {
             int posX = 0;
             int posY = 0;
 
-            foreach (var tile in CHRBank.Tiles)
+            for (int i = 0; i < CHRBank.Tiles.Count; i++)
             {
-                CHRBankBitmap.WriteCHRTile(tile, posX, posY, new Palette(0x0F, 0x00, 0x10, 0x30));
+                CHRBankBitmap.DrawCHRTile((uint) i, posX, posY, palette);
                 posX += 8;
                 if (posX >= CHR_IMAGE_WIDTH)
                 {

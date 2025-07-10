@@ -9,6 +9,7 @@
         {
             Name = name;
             Metatiles = [];
+            Metatiles.Add(new Metatile("Empty", Metatile.MetatileType.Air, 0,0,0,0));
         }
     }
 }

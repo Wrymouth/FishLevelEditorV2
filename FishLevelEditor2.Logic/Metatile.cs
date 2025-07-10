@@ -2,7 +2,7 @@
 {
     public class Metatile
     {
-        public enum Type : uint
+        public enum MetatileType : uint
         {
             Air,
             Solid,
@@ -12,8 +12,15 @@
         }
 
         public string Name { get; set; }
-        public Type MetatileType { get; set; }
+        public MetatileType Type { get; set; }
         public uint[] Tiles { get; set; }
+
+        public Metatile(string name, MetatileType type, uint tile0, uint tile1, uint tile2, uint tile3)
+        {
+            Name = name;
+            Type = type;
+            Tiles = [tile0, tile1, tile2, tile3];
+        }
 
     }
 }
