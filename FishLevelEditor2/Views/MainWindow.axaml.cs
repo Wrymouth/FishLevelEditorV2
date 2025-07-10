@@ -24,8 +24,9 @@ public partial class MainWindow : Window
 
     private void RepaintMetatileSet()
     {
-        MetatileSetViewModel metatileSetViewModel = (DataContext as MainViewModel).MetatileSetViewModel;
-        metatileSetViewModel.Display();
+        MainViewModel mainViewModel = (DataContext as MainViewModel);
+        MetatileSetViewModel metatileSetViewModel = mainViewModel.MetatileSetViewModel;
+        metatileSetViewModel.Display(mainViewModel.Level.BackgroundPalettes[0]);
         MetatileSetBitmap.Bitmap = metatileSetViewModel.MetatileSetBitmap.Bitmap;
     }
 
