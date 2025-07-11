@@ -14,10 +14,12 @@ namespace FishLevelEditor2.ViewModels
         public const int CHR_IMAGE_HEIGHT = 128;
         public CHRBank CHRBank { get; set; }
         public CHRBasedBitmap CHRBankBitmap { get; set; }
+        public uint SelectedTileIndex { get; set; }
         public CHRBankViewModel(CHRBank chrBank)
         {
             CHRBank = chrBank;
             CHRBankBitmap = new(CHR_IMAGE_WIDTH, CHR_IMAGE_HEIGHT, chrBank);
+            SelectedTileIndex = 0;
         }
         public void Display(Palette palette)
         {

@@ -73,7 +73,7 @@
               <Separator/>
               <HeaderedContentControl Header="CHR">
                 <StackPanel>
-                  <SKBitmapControl Width="256" Height="256" Name="CHRBitmap"/>
+                  <SKBitmapControl PointerPressed="CHRBitmap_PointerPressed" Width="256" Height="256" Name="CHRBitmap"/>
                   <Button Click="ReplaceCHRButton_Click" Name="ReplaceCHRButton" HorizontalAlignment="Center" Width="100">Replace</Button>
                 </StackPanel>
               </HeaderedContentControl>

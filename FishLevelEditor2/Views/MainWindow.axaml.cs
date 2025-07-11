@@ -1,9 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Platform;
 using FishLevelEditor2.Logic;
 using FishLevelEditor2.ViewModels;
 using ReactiveUI;
 using System;
+using System.Diagnostics;
 
 namespace FishLevelEditor2.Views;
 
@@ -22,7 +24,7 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
-    public void Repaint()
+    private void Repaint()
     {
         RepaintCHR();
         RepaintSelectedMetatile();
@@ -47,13 +49,26 @@ public partial class MainWindow : Window
         SelectedMetatileBitmap.InvalidateVisual();
     }
 
-    public void RepaintCHR()
+    private void RepaintCHR()
     {
         MainViewModel mainViewModel = (DataContext as MainViewModel);
         CHRBankViewModel chrBankViewModel = mainViewModel.CHRBankViewModel;
         chrBankViewModel.Display(mainViewModel.Level.BackgroundPalettes[0]);
         CHRBitmap.Bitmap = chrBankViewModel.CHRBankBitmap.Bitmap;
         CHRBitmap.InvalidateVisual();
+    }
+
+    private int GetMouseTileIndex(Point mousePos, int tileSize, int tilesPerRow, int maxTileIndex)
+    {
+        const int BITMAP_SCALE = 2;
+        int posX = (int)mousePos.X / BITMAP_SCALE;
+        int posY = (int)mousePos.Y / BITMAP_SCALE;
+        int tileIndex = posY / tileSize * tilesPerRow + (posX / tileSize);
+        if (tileIndex > maxTileIndex)
+        {
+            tileIndex = maxTileIndex;
+        }
+        return tileIndex;
     }
 
     private void ReplaceCHRButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -87,5 +102,12 @@ public partial class MainWindow : Window
         {
             mainViewModel.SelectedMetatileViewModel.Metatile.Type = (Metatile.MetatileType)MetatileTypeComboBox.SelectedIndex; ;
         }
+    }
+
+    private void CHRBitmap_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+    {
+        MainViewModel mainViewModel = (DataContext as MainViewModel);
+
+        mainViewModel.CHRBankViewModel.SelectedTileIndex = (uint) GetMouseTileIndex(e.GetPosition(CHRBitmap), 8, 16, 255);
     }
 }
