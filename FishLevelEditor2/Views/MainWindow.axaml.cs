@@ -144,4 +144,13 @@ public partial class MainWindow : Window
             Repaint();
         }
     }
+
+    private void MetatileSetBitmap_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+    {
+        MainViewModel mvm = (DataContext as MainViewModel);
+        int metatileIndex = GetMouseTileIndex(e.GetPosition(MetatileSetBitmap), 16, 8, mvm.Level.MetatileSet.Metatiles.Count - 1);
+        mvm.SelectedMetatileViewModel.Metatile = mvm.Level.MetatileSet.Metatiles[metatileIndex];
+        Repaint();
+
+    }
 }

@@ -13,6 +13,9 @@
   <Design.DataContext>
     <vm:MainViewModel/>
   </Design.DataContext>
+  <Window.Resources>
+    <StreamGeometry x:Key="arrow_undo_regular">M4.75,1.99981721 C5.12969577,1.99981721 5.44349096,2.28197109 5.49315338,2.64804665 L5.5,2.74981721 L5.5,8.43981721 L10.0743393,3.87995431 C12.516285,1.43800869 16.4384555,1.37844904 18.9526072,3.70127537 L19.1384834,3.87995431 C21.6414777,6.38294858 21.6414777,10.4411041 19.1384834,12.9440984 L10.2933472,21.7832698 L10.2933472,21.7832698 C10.0003251,22.0760341 9.52558023,22.0756964 9.23268704,21.7828032 C8.93979385,21.48991 8.9401317,21.0149074 9.23315376,20.7221431 L18.0778232,11.8834382 L18.0778232,11.8834382 C19.9950311,9.96623037 19.9950311,6.85782231 18.0778232,4.94061449 C16.2187126,3.08150387 13.2395019,3.02516718 11.3118079,4.77230194 L11.1342335,4.94137945 L6.562,9.49981721 L12.25,9.5 C12.6296958,9.5 12.943491,9.78215388 12.9931534,10.1482294 L13,10.25 C13,10.6296958 12.7178461,10.943491 12.3517706,10.9931534 L12.25,11 L4.75,11 C4.37030423,11 4.05650904,10.7178461 4.00684662,10.3517706 L4,10.25 L4,2.74981721 C4,2.33560365 4.33578644,1.99981721 4.75,1.99981721 Z</StreamGeometry>
+  </Window.Resources>
   <DockPanel>
     <Grid>
       <Grid.ColumnDefinitions>
@@ -31,12 +34,21 @@
         <MenuItem Header="Settings"/>
       </Menu>
       <Menu Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" >
-        <MenuItem Header="Undo" HotKey="Ctrl+Z" x:CompileBindings="False" Command="{Binding UndoCommand}"/>
-        <MenuItem Header="Redo" HotKey="Ctrl+Y" x:CompileBindings="False" Command="{Binding RedoCommand}"/>
-      </Menu>
-      <SKBitmapControl Grid.Column="0" Grid.Row="2" Name="MainLevelView">
 
-      </SKBitmapControl>
+        <MenuItem HotKey="Ctrl+Z" x:CompileBindings="False" Command="{Binding UndoCommand}">
+          <MenuItem.Header>
+            <PathIcon Height="10" Width="10" Data="{StaticResource arrow_undo_regular}"/>
+          </MenuItem.Header>
+        </MenuItem>
+        <MenuItem FlowDirection="RightToLeft" HotKey="Ctrl+Y" x:CompileBindings="False" Command="{Binding RedoCommand}">
+          <MenuItem.Header>
+            <PathIcon Height="10" Width="10" Data="{StaticResource arrow_undo_regular}"/>
+          </MenuItem.Header>
+        </MenuItem>
+      </Menu>
+      <DockPanel Grid.Column="0" Grid.Row="2">
+        <SKBitmapControl Name="MainLevelBitmap"/>
+      </DockPanel>
       <DockPanel Grid.Column="1" Grid.Row="2">
         <TabControl>
           <TabItem Header="Metatiles">
@@ -47,7 +59,7 @@
               <HeaderedContentControl Header="Metatile list">
                 <StackPanel>
                   <ScrollViewer Height="256">
-                    <SKBitmapControl Width="256" Height="1024" Name="MetatileSetBitmap"/>
+                    <SKBitmapControl Width="256" PointerPressed="MetatileSetBitmap_PointerPressed" Height="1024" Name="MetatileSetBitmap"/>
                   </ScrollViewer>
                   <Button Name="AddMetatileButton" Content="+" Width="256" Click="AddMetatileButton_Click"/>
                 </StackPanel>
