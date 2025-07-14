@@ -3,15 +3,19 @@ using FishLevelEditor2.Logic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Collections.Specialized.BitVector32;
 
 namespace FishLevelEditor2.EditorActions
 {
+    public delegate void EditorActionLogEventHandler(object sender, EditorActionLogEventArgs e);
     public static class EditorActionHandler
     {
         public const int ACTION_LIST_SIZE = 256;
+
+        public static event EditorActionLogEventHandler Log;
         public static List<EditorAction> EditorActions { get; set; }
 
         // index of the last performed action
@@ -33,24 +37,32 @@ namespace FishLevelEditor2.EditorActions
             }
             EditorActions.Add(action);
             action.Do(level);
+            Log?.Invoke(null, new(action.LogMessage));
         }
 
         public static void Undo(Level level)
         {
-            if (ActionListIndex >= 0)
+            if (ActionListIndex < 0)
             {
-                EditorActions[ActionListIndex].Undo(level);
-                ActionListIndex--;
+                Log?.Invoke(null, new("Nothing to undo."));
+                return;
             }
+            EditorActions[ActionListIndex].Undo(level);
+            Log?.Invoke(null, new($"Undo {EditorActions[ActionListIndex].LogMessage}"));
+            ActionListIndex--;
+
         }
 
         public static void Redo(Level level)
         {
-            if (ActionListIndex < EditorActions.Count - 1)
+            if (ActionListIndex >= EditorActions.Count - 1)
             {
-                ActionListIndex++;
-                EditorActions[ActionListIndex].Do(level);
+                Log?.Invoke(null, new("Nothing to redo."));
+                return;
             }
+            ActionListIndex++;
+            EditorActions[ActionListIndex].Do(level);
+            Log?.Invoke(null, new($"Redo {EditorActions[ActionListIndex].LogMessage}"));
         }
 
     }

@@ -7,6 +7,7 @@ using FishLevelEditor2.ViewModels;
 using ReactiveUI;
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices.Marshalling;
 
 namespace FishLevelEditor2.Views;
 
@@ -18,6 +19,14 @@ public partial class MainWindow : Window
         DataContext = new MainViewModel(Session.Project.Levels[levelIndex]);
         MainViewModel mvm = DataContext as MainViewModel;
         mvm.Repaint += HandleRepaint;
+        EditorActionHandler.Log += HandleLog;
+        Repaint();
+        SetLogMessage($"Successfully loaded level {mvm.Level.Name}");
+    }
+
+    private void HandleLog(object sender, EditorActionLogEventArgs e)
+    {
+        SetLogMessage(e.LogMessage);
         Repaint();
     }
 
@@ -39,6 +48,10 @@ public partial class MainWindow : Window
         RepaintMetatileSet();
     }
 
+    private void SetLogMessage(string message)
+    {
+        LogsLabel.Content = message;
+    }
     private void RepaintMetatileSet()
     {
         MainViewModel mainViewModel = (DataContext as MainViewModel);
