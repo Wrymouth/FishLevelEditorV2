@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Platform;
+using FishLevelEditor2.EditorActions;
 using FishLevelEditor2.Logic;
 using FishLevelEditor2.ViewModels;
 using ReactiveUI;
@@ -15,6 +16,13 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         DataContext = new MainViewModel(Session.Project.Levels[levelIndex]);
+        MainViewModel mvm = DataContext as MainViewModel;
+        mvm.Repaint += HandleRepaint;
+        Repaint();
+    }
+
+    private void HandleRepaint(object sender, EventArgs e)
+    {
         Repaint();
     }
 
@@ -80,7 +88,7 @@ public partial class MainWindow : Window
     private void AddMetatileButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         MainViewModel mainViewModel = (DataContext as MainViewModel);
-        mainViewModel.Level.MetatileSet.Metatiles.Add(new Metatile("", Metatile.MetatileType.Air, 0,0,0,0));
+        mainViewModel.Level.MetatileSet.Metatiles.Add(new Metatile("", Metatile.MetatileType.Air, 0, 0, 0, 0));
         Repaint();
     }
 
@@ -108,6 +116,19 @@ public partial class MainWindow : Window
     {
         MainViewModel mainViewModel = (DataContext as MainViewModel);
 
-        mainViewModel.CHRBankViewModel.SelectedTileIndex = (uint) GetMouseTileIndex(e.GetPosition(CHRBitmap), 8, 16, 255);
+        mainViewModel.CHRBankViewModel.SelectedTileIndex = (uint)GetMouseTileIndex(e.GetPosition(CHRBitmap), 8, 16, 255);
+    }
+
+    private void SelectedMetatileBitmap_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+    {
+        MainViewModel mvm = (DataContext as MainViewModel);
+
+        int tileIndex = GetMouseTileIndex(e.GetPosition(SelectedMetatileBitmap), 8, 2, 3);
+        if (mvm.CHRBankViewModel.SelectedTileIndex >= 0)
+        {
+            CHRBankViewModel cvm = mvm.CHRBankViewModel;
+            EditorActionHandler.Do(new SetMetatileTileAction(mvm.SelectedMetatileViewModel.Metatile, tileIndex, mvm.SelectedMetatileViewModel.Metatile.Tiles[tileIndex], cvm.SelectedTileIndex), mvm.Level);
+            Repaint();
+        }
     }
 }
