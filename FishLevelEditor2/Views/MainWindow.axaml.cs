@@ -151,6 +151,5 @@ public partial class MainWindow : Window
         int metatileIndex = GetMouseTileIndex(e.GetPosition(MetatileSetBitmap), 16, 8, mvm.Level.MetatileSet.Metatiles.Count - 1);
         mvm.SelectedMetatileViewModel.Metatile = mvm.Level.MetatileSet.Metatiles[metatileIndex];
         Repaint();
-
     }
 }
