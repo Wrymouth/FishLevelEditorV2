@@ -4,10 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:FishLevelEditor2.Views"
-        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="675"
-        Width="1200" Height="675"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="820"
+        Width="1200" Height="820"
         x:Class="FishLevelEditor2.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/fish.ico"
         CanResize="False"
         Title="FishLevelEditor2">
   <Design.DataContext>
@@ -19,8 +19,8 @@
   <DockPanel>
     <Grid>
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="62.5*"/>
-        <ColumnDefinition Width="37.5*"/>
+        <ColumnDefinition Width="70*"/>
+        <ColumnDefinition Width="30*"/>
       </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
         <RowDefinition Height="20"/>
@@ -34,7 +34,6 @@
         <MenuItem Header="Settings"/>
       </Menu>
       <Menu Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" >
-
         <MenuItem HotKey="Ctrl+Z" x:CompileBindings="False" Command="{Binding UndoCommand}">
           <MenuItem.Header>
             <PathIcon Height="10" Width="10" Data="{StaticResource arrow_undo_regular}"/>
@@ -46,9 +45,25 @@
           </MenuItem.Header>
         </MenuItem>
       </Menu>
-      <DockPanel Grid.Column="0" Grid.Row="2">
-        <SKBitmapControl Name="MainLevelBitmap"/>
-      </DockPanel>
+      <ScrollViewer Grid.ColumnSpan="1" Grid.Column="0" Grid.Row="2" Focusable="True" PointerMoved="LevelScrollViewer_PointerMoved" KeyDown="LevelScrollViewer_KeyDown" KeyUp="LevelScrollViewer_KeyUp" Background="LightGray" Name="LevelScrollViewer">
+        <Grid Margin="32">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+          </Grid.RowDefinitions>
+          <Button Click="AddRowAboveButton_Click" Grid.Column="1" Grid.Row="0" Name="AddRowAboveButton" Content="+"/>
+          <Button Click="AddColumnLeftButton_Click" Grid.Column="0" Grid.Row="1" Name="AddColumnLeftButton" Content="+"/>
+          <SKBitmapControl Grid.Column="1" Grid.Row="1" Name="MainLevelBitmap"/>
+          <Button Click="AddColumnRightButton_Click" Grid.Column="2" Grid.Row="1" Name="AddColumnRightButton" Content="+"/>
+          <Button Click="AddRowBelowButton_Click" Grid.Column="1" Grid.Row="2" Name="AddRowBelowButton" Content="+"/>
+        </Grid>
+      </ScrollViewer>
       <DockPanel Grid.Column="1" Grid.Row="2">
         <TabControl>
           <TabItem Header="Metatiles">
@@ -58,7 +73,7 @@
               <!--Metatile Set-->
               <HeaderedContentControl Header="Metatile list">
                 <StackPanel>
-                  <ScrollViewer Height="256">
+                  <ScrollViewer Name="MetatileListScrollViewer" Height="256">
                     <SKBitmapControl Width="256" PointerPressed="MetatileSetBitmap_PointerPressed" Height="1024" Name="MetatileSetBitmap"/>
                   </ScrollViewer>
                   <Button Name="AddMetatileButton" Content="+" Width="256" Click="AddMetatileButton_Click"/>
@@ -105,8 +120,8 @@
         </TabControl>
       </DockPanel>
 
-      <DockPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
-        <Label Name="LogsLabel"/>
+      <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+        <Label Content="Test" Name="LogsLabel"/>
       </DockPanel>
     </Grid>
   </DockPanel>

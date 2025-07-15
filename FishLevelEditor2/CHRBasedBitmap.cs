@@ -45,13 +45,13 @@ namespace FishLevelEditor2
 
         public void DrawCHRTile(uint tileIndex, int startX, int startY, Palette palette)
         {
-            for (int tileY = 0; tileY < Tile.TILE_HEIGHT; tileY++)
+            for (int tileX = 0; tileX < Tile.TILE_WIDTH; tileX++)
             {
-                for (int tileX = 0; tileX < Tile.TILE_WIDTH; tileX++)
+                for (int tileY = 0; tileY < Tile.TILE_HEIGHT; tileY++)
                 {
                     int pixelIndex = tileY * Tile.TILE_WIDTH + tileX;
-                    Tile tile = CHRBank.Tiles[(int) tileIndex];
-                    Bitmap.SetPixel(startX+tileX, startY+tileY, ResolvePaletteColor(tile.Pixels[pixelIndex], palette));
+                    Tile tile = CHRBank.Tiles[(int)tileIndex];
+                    Bitmap.SetPixel(startX + tileX, startY + tileY, ResolvePaletteColor(tile.Pixels[pixelIndex], palette));
                 }
             }
         }

@@ -8,6 +8,7 @@
         x:Class="FishLevelEditor2.LevelSelectDialog"
         x:DataType="vm:LevelSelectDialogViewModel"
         CanResize="False"
+        Icon="/Assets/fish.ico"
         Title="LevelSelectDialog">
   <TabControl>
     <TabItem Header="Levels">

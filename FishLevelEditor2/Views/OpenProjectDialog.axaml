@@ -6,6 +6,7 @@
         mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="130"
         Width="300" Height="130"
         CanResize="False"
+        Icon="/Assets/fish.ico"
         x:Class="FishLevelEditor2.OpenProjectDialog"
         x:DataType="vm:OpenProjectDialogViewModel"
         Title="Open Project">
