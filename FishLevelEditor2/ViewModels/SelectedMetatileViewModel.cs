@@ -7,32 +7,36 @@ namespace FishLevelEditor2.ViewModels
 {
     public class SelectedMetatileViewModel : INotifyPropertyChanged
     {
-        private Metatile _metatile;
+        private uint _metatileIndex;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public CHRBasedBitmap SelectedMetatileBitmap { get; set; }
 
-        public Metatile Metatile
+        public uint MetatileIndex
         {
-            get => _metatile;
+            get => _metatileIndex;
             set
             {
-                _metatile = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Metatile"));
+                _metatileIndex = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MetatileIndex"));
             }
         }
 
-        public SelectedMetatileViewModel(Metatile metatile, CHRBank chrBank)
+        public Metatile GetMetatileFromSet(MetatileSet metatileSet)
         {
-            Metatile = metatile;
+            return metatileSet.Metatiles[(int) MetatileIndex];
+        }
+        public SelectedMetatileViewModel(uint metatileIndex, CHRBank chrBank)
+        {
+            MetatileIndex = metatileIndex;
             SelectedMetatileBitmap = new(16, 16, chrBank);
         }
 
 
-        public void Display(Palette palette)
+        public void Display(Palette palette, MetatileSet metatileSet)
         {
-            SelectedMetatileBitmap.DrawMetatile(Metatile, 0, 0, palette);
+            SelectedMetatileBitmap.DrawMetatile(GetMetatileFromSet(metatileSet), 0, 0, palette);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using FishLevelEditor2.Logic;
+using FishLevelEditor2.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,40 +51,40 @@ namespace FishLevelEditor2.EditorActions
             Amount = amount;
         }
 
-        public override void Do(Level level)
+        public override void Do(MainViewModel mvm)
         {
             switch (Type)
             {
                 case AddType.RowsAbove:
-                    level.AddRowsAbove(Amount);
+                    mvm.LevelViewModel.Level.AddRowsAbove(Amount);
                     break;
                 case AddType.RowsBelow:
-                    level.AddRowsBelow(Amount);
+                    mvm.LevelViewModel.Level.AddRowsBelow(Amount);
                     break;
                 case AddType.ColumnsLeft:
-                    level.AddColumnsLeft(Amount);
+                    mvm.LevelViewModel.Level.AddColumnsLeft(Amount);
                     break;
                 case AddType.ColumnsRight:
-                    level.AddColumnsRight(Amount);
+                    mvm.LevelViewModel.Level.AddColumnsRight(Amount);
                     break;
             }
         }
 
-        public override void Undo(Level level)
+        public override void Undo(MainViewModel mvm)
         {
             switch (Type)
             {
                 case AddType.RowsAbove:
-                    level.RemoveRowsAbove(Amount);
+                    mvm.LevelViewModel.Level.RemoveRowsAbove(Amount);
                     break;
                 case AddType.RowsBelow:
-                    level.RemoveRowsBelow(Amount);
+                    mvm.LevelViewModel.Level.RemoveRowsBelow(Amount);
                     break;
                 case AddType.ColumnsLeft:
-                    level.RemoveColumnsLeft(Amount);
+                    mvm.LevelViewModel.Level.RemoveColumnsLeft(Amount);
                     break;
                 case AddType.ColumnsRight:
-                    level.RemoveColumnsRight(Amount);
+                    mvm.LevelViewModel.Level.RemoveColumnsRight(Amount);
                     break;
             }
         }

@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls.Platform;
 using FishLevelEditor2.Logic;
+using FishLevelEditor2.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace FishLevelEditor2.EditorActions
             ActionListIndex = -1;
         }
 
-        public static void Do(EditorAction action, Level level)
+        public static void Do(EditorAction action, MainViewModel mvm)
         {
             ActionListIndex++;
             if (ActionListIndex < EditorActions.Count)
@@ -36,24 +37,24 @@ namespace FishLevelEditor2.EditorActions
                 EditorActions.RemoveRange(ActionListIndex, (EditorActions.Count - ActionListIndex));
             }
             EditorActions.Add(action);
-            action.Do(level);
+            action.Do(mvm);
             Log?.Invoke(null, new(action.LogMessage));
         }
 
-        public static void Undo(Level level)
+        public static void Undo(MainViewModel mvm)
         {
             if (ActionListIndex < 0)
             {
                 Log?.Invoke(null, new("Nothing to undo."));
                 return;
             }
-            EditorActions[ActionListIndex].Undo(level);
+            EditorActions[ActionListIndex].Undo(mvm);
             Log?.Invoke(null, new($"Undo {EditorActions[ActionListIndex].LogMessage}"));
             ActionListIndex--;
 
         }
 
-        public static void Redo(Level level)
+        public static void Redo(MainViewModel mvm)
         {
             if (ActionListIndex >= EditorActions.Count - 1)
             {
@@ -61,7 +62,7 @@ namespace FishLevelEditor2.EditorActions
                 return;
             }
             ActionListIndex++;
-            EditorActions[ActionListIndex].Do(level);
+            EditorActions[ActionListIndex].Do(mvm);
             Log?.Invoke(null, new($"Redo {EditorActions[ActionListIndex].LogMessage}"));
         }
 

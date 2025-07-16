@@ -1,4 +1,5 @@
 ﻿using FishLevelEditor2.Logic;
+using FishLevelEditor2.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,14 +25,14 @@ namespace FishLevelEditor2.EditorActions
             PosY = posY;
         }
 
-        public override void Do(Level level)
+        public override void Do(MainViewModel mvm)
         {
-            level.ScreenMetatiles[PosX][PosY] = NewMetatile;
+            mvm.LevelViewModel.Level.ScreenMetatiles[PosX][PosY] = NewMetatile;
         }
 
-        public override void Undo(Level level)
+        public override void Undo(MainViewModel mvm)
         {
-            level.ScreenMetatiles[PosX][PosY] = PreviousMetatile;
+            mvm.LevelViewModel.Level.ScreenMetatiles[PosX][PosY] = PreviousMetatile;
         }
     }
 }

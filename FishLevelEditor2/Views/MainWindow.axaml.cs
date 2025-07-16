@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.Marshalling;
+using static FishLevelEditor2.Logic.Metatile;
 
 namespace FishLevelEditor2.Views;
 
@@ -25,7 +26,7 @@ public partial class MainWindow : Window
         DataContext = new MainViewModel(Session.Project.Levels[levelIndex]);
         MainViewModel mvm = DataContext as MainViewModel;
         mvm.SelectedMetatileViewModel.PropertyChanged += SelectedMetatileViewModel_PropertyChanged;
-        mvm.SelectedMetatileViewModel.Metatile = mvm.LevelViewModel.Level.MetatileSet.Metatiles[0]; // force a PropertyChanged
+        mvm.SelectedMetatileViewModel.MetatileIndex = 0; // force a PropertyChanged
         LevelScrollViewer.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Hidden;
         LevelScrollViewer.VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Hidden;
 
@@ -49,9 +50,9 @@ public partial class MainWindow : Window
     private void SelectedMetatileViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         MainViewModel mvm = DataContext as MainViewModel;
-
-        MetatileNameTextBox.Text = mvm.SelectedMetatileViewModel.Metatile.Name;
-        MetatileTypeComboBox.SelectedIndex = (int)mvm.SelectedMetatileViewModel.Metatile.Type;
+        Metatile metatile = mvm.SelectedMetatileViewModel.GetMetatileFromSet(mvm.LevelViewModel.Level.MetatileSet);
+        MetatileNameTextBox.Text = metatile.Name;
+        MetatileTypeComboBox.SelectedIndex = (int)metatile.Type;
         Repaint();
     }
 
@@ -141,18 +142,18 @@ public partial class MainWindow : Window
 
     private void RepaintMetatileSet()
     {
-        MainViewModel mainViewModel = (DataContext as MainViewModel);
-        MetatileSetViewModel metatileSetViewModel = mainViewModel.MetatileSetViewModel;
-        metatileSetViewModel.Display(mainViewModel.LevelViewModel.Level.BackgroundPalettes[0]);
+        MainViewModel mvm = (DataContext as MainViewModel);
+        MetatileSetViewModel metatileSetViewModel = mvm.MetatileSetViewModel;
+        metatileSetViewModel.Display(mvm.LevelViewModel.Level.BackgroundPalettes[0]);
         MetatileSetBitmap.Bitmap = metatileSetViewModel.MetatileSetBitmap.Bitmap;
         MetatileSetBitmap.InvalidateVisual();
     }
 
     private void RepaintSelectedMetatile()
     {
-        MainViewModel mainViewModel = (DataContext as MainViewModel);
-        SelectedMetatileViewModel selectedMetatileViewModel = mainViewModel.SelectedMetatileViewModel;
-        selectedMetatileViewModel.Display(mainViewModel.LevelViewModel.Level.BackgroundPalettes[0]);
+        MainViewModel mvm = (DataContext as MainViewModel);
+        SelectedMetatileViewModel selectedMetatileViewModel = mvm.SelectedMetatileViewModel;
+        selectedMetatileViewModel.Display(mvm.LevelViewModel.Level.BackgroundPalettes[0], mvm.LevelViewModel.Level.MetatileSet);
         SelectedMetatileBitmap.Bitmap = selectedMetatileViewModel.SelectedMetatileBitmap.Bitmap;
         SelectedMetatileBitmap.InvalidateVisual();
     }
@@ -175,28 +176,31 @@ public partial class MainWindow : Window
     private void AddMetatileButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         MainViewModel mvm = (DataContext as MainViewModel);
-        mvm.LevelViewModel.Level.MetatileSet.Metatiles.Add(new Metatile("", Metatile.MetatileType.Air, 0, 0, 0, 0));
-        mvm.SelectedMetatileViewModel.Metatile = mvm.LevelViewModel.Level.MetatileSet.Metatiles.Last();
+        if (mvm.LevelViewModel.Level.MetatileSet.Metatiles.Count >= MetatileSet.MAX_METATILES_IN_SET)
+        {
+            return;
+        }
+        EditorActionHandler.Do(new AddMetatileAction(mvm.SelectedMetatileViewModel.MetatileIndex), mvm);
         Repaint();
     }
 
     private void MetatileNameTextBox_TextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e)
     {
-        MainViewModel mainViewModel = (DataContext as MainViewModel);
+        MainViewModel mvm = (DataContext as MainViewModel);
 
-        if (mainViewModel.SelectedMetatileViewModel.Metatile is not null)
+        if (mvm.SelectedMetatileViewModel.MetatileIndex >= 0)
         {
-            mainViewModel.SelectedMetatileViewModel.Metatile.Name = MetatileNameTextBox.Text;
+            mvm.SelectedMetatileViewModel.GetMetatileFromSet(mvm.LevelViewModel.Level.MetatileSet).Name = MetatileNameTextBox.Text;
         }
     }
 
     private void MetatileTypeComboBox_SelectionChanged(object? sender, Avalonia.Controls.SelectionChangedEventArgs e)
     {
-        MainViewModel mainViewModel = (DataContext as MainViewModel);
+        MainViewModel mvm = (DataContext as MainViewModel);
 
-        if (mainViewModel.SelectedMetatileViewModel.Metatile is not null)
+        if (mvm.SelectedMetatileViewModel.MetatileIndex >= 0)
         {
-            mainViewModel.SelectedMetatileViewModel.Metatile.Type = (Metatile.MetatileType)MetatileTypeComboBox.SelectedIndex;
+            mvm.SelectedMetatileViewModel.GetMetatileFromSet(mvm.LevelViewModel.Level.MetatileSet).Type = (MetatileType)MetatileTypeComboBox.SelectedIndex;
         }
     }
 
@@ -211,11 +215,11 @@ public partial class MainWindow : Window
     {
         MainViewModel mvm = (DataContext as MainViewModel);
 
-        int tileIndex = mvm.GetMouseTileIndex(e.GetPosition(SelectedMetatileBitmap), 8, 2, 3);
+        uint tileIndex = mvm.GetMouseTileIndex(e.GetPosition(SelectedMetatileBitmap), 8, 2, 3);
         if (mvm.CHRBankViewModel.SelectedTileIndex >= 0)
         {
             CHRBankViewModel cvm = mvm.CHRBankViewModel;
-            EditorActionHandler.Do(new SetMetatileTileAction(mvm.SelectedMetatileViewModel.Metatile, tileIndex, mvm.SelectedMetatileViewModel.Metatile.Tiles[tileIndex], cvm.SelectedTileIndex), mvm.LevelViewModel.Level);
+            EditorActionHandler.Do(new SetMetatileTileAction(mvm.SelectedMetatileViewModel.MetatileIndex, (int) tileIndex, mvm.SelectedMetatileViewModel.GetMetatileFromSet(mvm.LevelViewModel.Level.MetatileSet).Tiles[tileIndex], cvm.SelectedTileIndex), mvm);
             Repaint();
         }
     }
@@ -223,8 +227,8 @@ public partial class MainWindow : Window
     private void MetatileSetBitmap_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
         MainViewModel mvm = (DataContext as MainViewModel);
-        int metatileIndex = mvm.GetMouseTileIndex(e.GetPosition(MetatileSetBitmap), 16, 8, mvm.LevelViewModel.Level.MetatileSet.Metatiles.Count - 1);
-        mvm.SelectedMetatileViewModel.Metatile = mvm.LevelViewModel.Level.MetatileSet.Metatiles[metatileIndex];
+        uint metatileIndex = mvm.GetMouseTileIndex(e.GetPosition(MetatileSetBitmap), 16, 8, (uint) mvm.LevelViewModel.Level.MetatileSet.Metatiles.Count - 1);
+        mvm.SelectedMetatileViewModel.MetatileIndex = metatileIndex;
         Repaint();
     }
 
@@ -241,7 +245,7 @@ public partial class MainWindow : Window
     private void AddRowAboveButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         MainViewModel mvm = (DataContext as MainViewModel);
-        EditorActionHandler.Do(new AddRowOrColumnAction(AddRowOrColumnAction.AddType.RowsAbove, 1), mvm.LevelViewModel.Level);
+        EditorActionHandler.Do(new AddRowOrColumnAction(AddRowOrColumnAction.AddType.RowsAbove, 1), mvm);
         Repaint();
     }
 
@@ -249,21 +253,21 @@ public partial class MainWindow : Window
     {
 
         MainViewModel mvm = (DataContext as MainViewModel);
-        EditorActionHandler.Do(new AddRowOrColumnAction(AddRowOrColumnAction.AddType.RowsBelow, 1), mvm.LevelViewModel.Level);
+        EditorActionHandler.Do(new AddRowOrColumnAction(AddRowOrColumnAction.AddType.RowsBelow, 1), mvm);
         Repaint();
     }
 
     private void AddColumnLeftButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         MainViewModel mvm = (DataContext as MainViewModel);
-        EditorActionHandler.Do(new AddRowOrColumnAction(AddRowOrColumnAction.AddType.ColumnsLeft, 1), mvm.LevelViewModel.Level);
+        EditorActionHandler.Do(new AddRowOrColumnAction(AddRowOrColumnAction.AddType.ColumnsLeft, 1), mvm);
         Repaint();
     }
 
     private void AddColumnRightButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         MainViewModel mvm = (DataContext as MainViewModel);
-        EditorActionHandler.Do(new AddRowOrColumnAction(AddRowOrColumnAction.AddType.ColumnsRight, 1), mvm.LevelViewModel.Level);
+        EditorActionHandler.Do(new AddRowOrColumnAction(AddRowOrColumnAction.AddType.ColumnsRight, 1), mvm);
         Repaint();
     }
 

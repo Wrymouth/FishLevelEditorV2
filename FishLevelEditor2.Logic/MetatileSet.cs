@@ -2,6 +2,7 @@
 {
     public class MetatileSet
     {
+        public const int MAX_METATILES_IN_SET = 256;
         public string Name { get; set; }
         public List<Metatile> Metatiles { get; set; }
 
