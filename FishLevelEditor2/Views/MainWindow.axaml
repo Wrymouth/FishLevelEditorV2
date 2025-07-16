@@ -45,7 +45,7 @@
           </MenuItem.Header>
         </MenuItem>
       </Menu>
-      <ScrollViewer Grid.ColumnSpan="1" Grid.Column="0" Grid.Row="2" Focusable="True" PointerMoved="LevelScrollViewer_PointerMoved" KeyDown="LevelScrollViewer_KeyDown" KeyUp="LevelScrollViewer_KeyUp" Background="LightGray" Name="LevelScrollViewer">
+      <ScrollViewer Grid.ColumnSpan="1" Grid.Column="0" Grid.Row="2" Focusable="True" KeyDown="LevelScrollViewer_KeyDown" KeyUp="LevelScrollViewer_KeyUp" Background="LightGray" Name="LevelScrollViewer">
         <Grid Margin="32">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -59,7 +59,7 @@
           </Grid.RowDefinitions>
           <Button Click="AddRowAboveButton_Click" Grid.Column="1" Grid.Row="0" Name="AddRowAboveButton" Content="+"/>
           <Button Click="AddColumnLeftButton_Click" Grid.Column="0" Grid.Row="1" Name="AddColumnLeftButton" Content="+"/>
-          <SKBitmapControl Grid.Column="1" Grid.Row="1" Name="MainLevelBitmap"/>
+          <SKBitmapControl PointerPressed="MainLevelBitmap_PointerPressed" PointerMoved="MainLevelBitmap_PointerMoved" Grid.Column="1" Grid.Row="1" Name="MainLevelBitmap"/>
           <Button Click="AddColumnRightButton_Click" Grid.Column="2" Grid.Row="1" Name="AddColumnRightButton" Content="+"/>
           <Button Click="AddRowBelowButton_Click" Grid.Column="1" Grid.Row="2" Name="AddRowBelowButton" Content="+"/>
         </Grid>

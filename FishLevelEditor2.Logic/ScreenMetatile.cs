@@ -10,5 +10,12 @@
             Metatile = metatile;
             Palette = palette;
         }
+
+        // copy
+        public ScreenMetatile(ScreenMetatile screenMetatile)
+        {
+            Metatile = screenMetatile.Metatile;
+            Palette = screenMetatile.Palette;
+        }
     }
 }

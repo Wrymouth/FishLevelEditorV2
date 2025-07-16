@@ -155,19 +155,6 @@ public partial class MainWindow : Window
         CHRBitmap.InvalidateVisual();
     }
 
-    private int GetMouseTileIndex(Point mousePos, int tileSize, int tilesPerRow, int maxTileIndex)
-    {
-        const int BITMAP_SCALE = 2;
-        int posX = (int)mousePos.X / BITMAP_SCALE;
-        int posY = (int)mousePos.Y / BITMAP_SCALE;
-        int tileIndex = posY / tileSize * tilesPerRow + (posX / tileSize);
-        if (tileIndex > maxTileIndex)
-        {
-            tileIndex = maxTileIndex;
-        }
-        return tileIndex;
-    }
-
     private void ReplaceCHRButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         LevelSelectDialog levelSelectDialog = new();
@@ -197,22 +184,22 @@ public partial class MainWindow : Window
 
         if (mainViewModel.SelectedMetatileViewModel.Metatile is not null)
         {
-            mainViewModel.SelectedMetatileViewModel.Metatile.Type = (Metatile.MetatileType)MetatileTypeComboBox.SelectedIndex; ;
+            mainViewModel.SelectedMetatileViewModel.Metatile.Type = (Metatile.MetatileType)MetatileTypeComboBox.SelectedIndex;
         }
     }
 
     private void CHRBitmap_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
-        MainViewModel mainViewModel = (DataContext as MainViewModel);
+        MainViewModel mvm = (DataContext as MainViewModel);
 
-        mainViewModel.CHRBankViewModel.SelectedTileIndex = (uint)GetMouseTileIndex(e.GetPosition(CHRBitmap), 8, 16, 255);
+        mvm.CHRBankViewModel.SelectedTileIndex = (uint)mvm.GetMouseTileIndex(e.GetPosition(CHRBitmap), 8, 16, 255);
     }
 
     private void SelectedMetatileBitmap_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
         MainViewModel mvm = (DataContext as MainViewModel);
 
-        int tileIndex = GetMouseTileIndex(e.GetPosition(SelectedMetatileBitmap), 8, 2, 3);
+        int tileIndex = mvm.GetMouseTileIndex(e.GetPosition(SelectedMetatileBitmap), 8, 2, 3);
         if (mvm.CHRBankViewModel.SelectedTileIndex >= 0)
         {
             CHRBankViewModel cvm = mvm.CHRBankViewModel;
@@ -224,7 +211,7 @@ public partial class MainWindow : Window
     private void MetatileSetBitmap_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
         MainViewModel mvm = (DataContext as MainViewModel);
-        int metatileIndex = GetMouseTileIndex(e.GetPosition(MetatileSetBitmap), 16, 8, mvm.LevelViewModel.Level.MetatileSet.Metatiles.Count - 1);
+        int metatileIndex = mvm.GetMouseTileIndex(e.GetPosition(MetatileSetBitmap), 16, 8, mvm.LevelViewModel.Level.MetatileSet.Metatiles.Count - 1);
         mvm.SelectedMetatileViewModel.Metatile = mvm.LevelViewModel.Level.MetatileSet.Metatiles[metatileIndex];
         Repaint();
     }
@@ -239,11 +226,6 @@ public partial class MainWindow : Window
         keysHeld.Remove(e.Key);
     }
 
-    private void LevelScrollViewer_PointerMoved(object? sender, Avalonia.Input.PointerEventArgs e)
-    {
-        
-    }
-
     private void AddRowAboveButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         MainViewModel mvm = (DataContext as MainViewModel);
@@ -253,7 +235,7 @@ public partial class MainWindow : Window
 
     private void AddRowBelowButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        
+
         MainViewModel mvm = (DataContext as MainViewModel);
         EditorActionHandler.Do(new AddRowOrColumnAction(AddRowOrColumnAction.AddType.RowsBelow, 1), mvm.LevelViewModel.Level);
         Repaint();
@@ -271,5 +253,23 @@ public partial class MainWindow : Window
         MainViewModel mvm = (DataContext as MainViewModel);
         EditorActionHandler.Do(new AddRowOrColumnAction(AddRowOrColumnAction.AddType.ColumnsRight, 1), mvm.LevelViewModel.Level);
         Repaint();
+    }
+
+    private void MainLevelBitmap_PointerMoved(object? sender, Avalonia.Input.PointerEventArgs e)
+    {
+        MainViewModel mvm = (DataContext as MainViewModel);
+        var point = e.GetCurrentPoint(sender as Control);
+
+        if (point.Properties.IsLeftButtonPressed)
+        {
+            mvm.PlaceMetatileInLevel(e.GetPosition(MainLevelBitmap));
+        }
+    }
+
+    private void MainLevelBitmap_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+    {
+        MainViewModel mvm = (DataContext as MainViewModel);
+        mvm.PlaceMetatileInLevel(e.GetPosition(MainLevelBitmap));
+
     }
 }

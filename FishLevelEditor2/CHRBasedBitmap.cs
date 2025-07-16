@@ -45,13 +45,34 @@ namespace FishLevelEditor2
 
         public void DrawCHRTile(uint tileIndex, int startX, int startY, Palette palette)
         {
-            for (int tileX = 0; tileX < Tile.TILE_WIDTH; tileX++)
+            Span<byte> buffer = Bitmap.GetPixelSpan();
+            int stride = Bitmap.RowBytes;
+            int width = Bitmap.Width;
+            int height = Bitmap.Height;
+
+            Tile tile = CHRBank.Tiles[(int)tileIndex];
+
+            for (int tileY = 0; tileY < Tile.TILE_HEIGHT; tileY++)
             {
-                for (int tileY = 0; tileY < Tile.TILE_HEIGHT; tileY++)
+                int destY = startY + tileY;
+                if (destY < 0 || destY >= height) continue;
+
+                for (int tileX = 0; tileX < Tile.TILE_WIDTH; tileX++)
                 {
+                    int destX = startX + tileX;
+                    if (destX < 0 || destX >= width) continue;
+
                     int pixelIndex = tileY * Tile.TILE_WIDTH + tileX;
-                    Tile tile = CHRBank.Tiles[(int)tileIndex];
-                    Bitmap.SetPixel(startX + tileX, startY + tileY, ResolvePaletteColor(tile.Pixels[pixelIndex], palette));
+                    SKColor color = ResolvePaletteColor(tile.Pixels[pixelIndex], palette);
+
+
+                    int offset = destY * stride + destX * 4;
+
+                    // Force alpha to 255 (opaque) since SKAlphaType is Opaque
+                    buffer[offset + 0] = color.Red;
+                    buffer[offset + 1] = color.Green;
+                    buffer[offset + 2] = color.Blue;
+                    buffer[offset + 3] = 255;
                 }
             }
         }
