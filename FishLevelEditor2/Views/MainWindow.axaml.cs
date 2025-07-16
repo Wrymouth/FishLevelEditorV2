@@ -9,6 +9,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices.Marshalling;
 
 namespace FishLevelEditor2.Views;
@@ -23,7 +24,8 @@ public partial class MainWindow : Window
         InitializeComponent();
         DataContext = new MainViewModel(Session.Project.Levels[levelIndex]);
         MainViewModel mvm = DataContext as MainViewModel;
-
+        mvm.SelectedMetatileViewModel.PropertyChanged += SelectedMetatileViewModel_PropertyChanged;
+        mvm.SelectedMetatileViewModel.Metatile = mvm.LevelViewModel.Level.MetatileSet.Metatiles[0]; // force a PropertyChanged
         LevelScrollViewer.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Hidden;
         LevelScrollViewer.VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Hidden;
 
@@ -42,6 +44,15 @@ public partial class MainWindow : Window
 
         Repaint();
         SetLogMessage($"Successfully loaded level {mvm.LevelViewModel.Level.Name}");
+    }
+
+    private void SelectedMetatileViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        MainViewModel mvm = DataContext as MainViewModel;
+
+        MetatileNameTextBox.Text = mvm.SelectedMetatileViewModel.Metatile.Name;
+        MetatileTypeComboBox.SelectedIndex = (int)mvm.SelectedMetatileViewModel.Metatile.Type;
+        Repaint();
     }
 
     private void SetLevelImageDimensions()
@@ -163,8 +174,9 @@ public partial class MainWindow : Window
 
     private void AddMetatileButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        MainViewModel mainViewModel = (DataContext as MainViewModel);
-        mainViewModel.LevelViewModel.Level.MetatileSet.Metatiles.Add(new Metatile("", Metatile.MetatileType.Air, 0, 0, 0, 0));
+        MainViewModel mvm = (DataContext as MainViewModel);
+        mvm.LevelViewModel.Level.MetatileSet.Metatiles.Add(new Metatile("", Metatile.MetatileType.Air, 0, 0, 0, 0));
+        mvm.SelectedMetatileViewModel.Metatile = mvm.LevelViewModel.Level.MetatileSet.Metatiles.Last();
         Repaint();
     }
 
