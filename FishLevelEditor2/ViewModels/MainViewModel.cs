@@ -84,7 +84,19 @@ public class MainViewModel : ViewModelBase
             Repaint?.Invoke(this, new EventArgs());
         }
     }
-
+    public void PickMetatile(Point mousePos)
+    {
+        Level level = LevelViewModel.Level;
+        uint tileIndex = GetMouseTileIndex(mousePos, 16, level.Width, (uint)(level.Width * level.Height));
+        int posY = (int)tileIndex / level.Width;
+        int posX = (int)tileIndex % level.Width;
+        if (posY >= level.Height || posX >= level.Width)
+        {
+            return;
+        }
+        EditorActionHandler.Do(new PickMetatileAction(SelectedMetatileViewModel.MetatileIndex, 0, posX, posY), this);
+        Repaint?.Invoke(this, new EventArgs());
+    }
     public void Undo()
     {
         EditorActionHandler.Undo(this);

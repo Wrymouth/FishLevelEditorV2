@@ -240,7 +240,7 @@ public partial class MainWindow : Window
         if (mvm.CHRBankViewModel.SelectedTileIndex >= 0)
         {
             CHRBankViewModel cvm = mvm.CHRBankViewModel;
-            EditorActionHandler.Do(new SetMetatileTileAction(mvm.SelectedMetatileViewModel.MetatileIndex, (int) tileIndex, mvm.SelectedMetatileViewModel.GetMetatileFromSet(mvm.LevelViewModel.Level.MetatileSet).Tiles[tileIndex], cvm.SelectedTileIndex), mvm);
+            EditorActionHandler.Do(new SetMetatileTileAction(mvm.SelectedMetatileViewModel.MetatileIndex, (int)tileIndex, mvm.SelectedMetatileViewModel.GetMetatileFromSet(mvm.LevelViewModel.Level.MetatileSet).Tiles[tileIndex], cvm.SelectedTileIndex), mvm);
             Repaint();
         }
     }
@@ -248,7 +248,7 @@ public partial class MainWindow : Window
     private void MetatileSetBitmap_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
         MainViewModel mvm = (DataContext as MainViewModel);
-        uint metatileIndex = mvm.GetMouseTileIndex(e.GetPosition(MetatileSetBitmap), 16, 8, (uint) mvm.LevelViewModel.Level.MetatileSet.Metatiles.Count - 1);
+        uint metatileIndex = mvm.GetMouseTileIndex(e.GetPosition(MetatileSetBitmap), 16, 8, (uint)mvm.LevelViewModel.Level.MetatileSet.Metatiles.Count - 1);
         mvm.SelectedMetatileViewModel.MetatileIndex = metatileIndex;
         Repaint();
     }
@@ -306,7 +306,15 @@ public partial class MainWindow : Window
     private void MainLevelBitmap_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
         MainViewModel mvm = (DataContext as MainViewModel);
-        mvm.PlaceMetatileInLevel(e.GetPosition(MainLevelBitmap));
+        var point = e.GetCurrentPoint(sender as Control);
+        if (point.Properties.IsLeftButtonPressed)
+        {
+            mvm.PlaceMetatileInLevel(e.GetPosition(MainLevelBitmap));
+        }
+        else
+        {
+            mvm.PickMetatile(e.GetPosition(MainLevelBitmap));
+        }
 
     }
 }
