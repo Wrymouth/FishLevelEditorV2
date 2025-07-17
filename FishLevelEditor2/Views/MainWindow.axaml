@@ -9,7 +9,7 @@
         x:Class="FishLevelEditor2.Views.MainWindow"
         Icon="/Assets/fish.ico"
         CanResize="False"
-        Title="FishLevelEditor2">
+        Title="Fish Level Editor 2.0.0">
   <Design.DataContext>
     <vm:MainViewModel/>
   </Design.DataContext>
@@ -30,8 +30,17 @@
       </Grid.RowDefinitions>
 
       <Menu Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" >
-        <MenuItem Header="File"/>
-        <MenuItem Header="Settings"/>
+        <MenuItem Header="File">
+          <MenuItem Header="Change Level"></MenuItem>
+          <Separator/>
+          <MenuItem HotKey="Ctrl+S" Header="Save" x:CompileBindings="False" Command="{Binding SaveCommand}"></MenuItem>
+          <MenuItem HotKey="Ctrl+Shift+S" Header="Save as..." x:CompileBindings="False" Command="{Binding SaveAsCommand}"></MenuItem>
+          <Separator/>
+          <MenuItem HotKey="Ctrl+E" Header="Export level..." x:CompileBindings="False" Command="{Binding ExportCommand}"></MenuItem>
+        </MenuItem>
+        <MenuItem Header="Settings">
+          
+        </MenuItem>
       </Menu>
       <Menu Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" >
         <MenuItem HotKey="Ctrl+Z" x:CompileBindings="False" Command="{Binding UndoCommand}">

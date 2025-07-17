@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Platform;
+using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using FishLevelEditor2.EditorActions;
 using FishLevelEditor2.Logic;
@@ -32,6 +33,7 @@ public partial class MainWindow : Window
 
 
         mvm.Repaint += HandleRepaint;
+        mvm.OpenSaveAs += HandleSaveAs;
         EditorActionHandler.Log += HandleLog;
 
         keyRepeatTimer = new DispatcherTimer
@@ -45,6 +47,25 @@ public partial class MainWindow : Window
 
         Repaint();
         SetLogMessage($"Successfully loaded level {mvm.LevelViewModel.Level.Name}");
+    }
+
+    private async void HandleSaveAs(object sender, EventArgs e)
+    {
+        // Get top level from the current control. Alternatively, you can use Window reference instead.
+        var topLevel = GetTopLevel(this);
+
+        // Start async operation to open the dialog.
+        var saveFileLocation = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Save Project",
+            DefaultExtension = ".json",
+            ShowOverwritePrompt = true,
+        });
+
+        if (saveFileLocation is not null)
+        {
+            Session.Project.Save(saveFileLocation.Path.AbsolutePath);
+        }
     }
 
     private void SelectedMetatileViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

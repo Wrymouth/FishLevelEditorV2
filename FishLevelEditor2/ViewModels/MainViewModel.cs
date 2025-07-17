@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Platform.Storage;
 using FishLevelEditor2.EditorActions;
 using FishLevelEditor2.Logic;
 using ReactiveUI;
@@ -10,15 +11,22 @@ using System.Threading.Tasks;
 namespace FishLevelEditor2.ViewModels;
 
 public delegate void RepaintEventHandler(object sender, EventArgs e);
+public delegate void OpenSaveAsDialogEventHandler(object sender, EventArgs e);
+public delegate void OpenExportDialogEventHandler(object sender, EventArgs e);
 public class MainViewModel : ViewModelBase
 {
     public event RepaintEventHandler Repaint;
+    public event OpenSaveAsDialogEventHandler OpenSaveAs;
+    public event OpenExportDialogEventHandler OpenExport;
     public CHRBankViewModel CHRBankViewModel { get; set; }
     public SelectedMetatileViewModel SelectedMetatileViewModel { get; set; }
     public MetatileSetViewModel MetatileSetViewModel { get; set; }
     public LevelViewModel LevelViewModel { get; set; }
     public ReactiveCommand<Unit, Unit> UndoCommand { get; }
     public ReactiveCommand<Unit, Unit> RedoCommand { get; }
+    public ReactiveCommand<Unit, Unit> SaveCommand { get; }
+    public ReactiveCommand<Unit, Unit> SaveAsCommand { get; }
+    public ReactiveCommand<Unit, Unit> ExportCommand { get; }
 
     public MainViewModel(Level level)
     {
@@ -28,12 +36,15 @@ public class MainViewModel : ViewModelBase
         SelectedMetatileViewModel = new(0, level.BackgroundCHR);
         UndoCommand = ReactiveCommand.Create(Undo);
         RedoCommand = ReactiveCommand.Create(Redo);
+        SaveCommand = ReactiveCommand.Create(Save);
+        SaveAsCommand = ReactiveCommand.Create(SaveAs);
+        ExportCommand = ReactiveCommand.Create(Export);
     }
 
     // empty constructor for previewer
     public MainViewModel()
     {
-        
+
     }
 
     public uint GetMouseTileIndex(Point mousePos, int tileSize, int tilesPerRow, uint maxTileIndex)
@@ -41,7 +52,7 @@ public class MainViewModel : ViewModelBase
         const int BITMAP_SCALE = 2;
         int posX = (int)mousePos.X / BITMAP_SCALE;
         int posY = (int)mousePos.Y / BITMAP_SCALE;
-        uint tileIndex = (uint) (posY / tileSize * tilesPerRow + (posX / tileSize));
+        uint tileIndex = (uint)(posY / tileSize * tilesPerRow + (posX / tileSize));
         if (tileIndex > maxTileIndex)
         {
             tileIndex = maxTileIndex;
@@ -52,18 +63,18 @@ public class MainViewModel : ViewModelBase
     public void PlaceMetatileInLevel(Point mousePos)
     {
         Level level = LevelViewModel.Level;
-        uint tileIndex = GetMouseTileIndex(mousePos, 16, level.Width, (uint) (level.Width * level.Height));
+        uint tileIndex = GetMouseTileIndex(mousePos, 16, level.Width, (uint)(level.Width * level.Height));
         if (SelectedMetatileViewModel.MetatileIndex >= 0)
         {
-            int posY = (int) tileIndex / level.Width;
-            int posX = (int) tileIndex % level.Width;
+            int posY = (int)tileIndex / level.Width;
+            int posX = (int)tileIndex % level.Width;
             if (posY >= level.Height || posX >= level.Width)
             {
                 return;
             }
             ScreenMetatile selectedScreenMetatile = level.ScreenMetatiles[posX][posY];
             uint metatileIndex = SelectedMetatileViewModel.MetatileIndex;
-            if (selectedScreenMetatile.Metatile == metatileIndex && selectedScreenMetatile.Palette == 0)
+            if (selectedScreenMetatile.mi == metatileIndex && selectedScreenMetatile.pi == 0)
             {
                 // do not process this action, it's a repeat
                 return;
@@ -84,5 +95,27 @@ public class MainViewModel : ViewModelBase
     {
         EditorActionHandler.Redo(this);
         Repaint?.Invoke(this, new EventArgs());
+    }
+
+    public void Save()
+    {
+        string filePath = Session.Config.RecentProjectFilePath;
+        if (string.IsNullOrEmpty(filePath))
+        {
+            SaveAs();
+            return;
+        }
+        Session.Project.Save(filePath);
+    }
+
+    public void SaveAs()
+    {
+        // not a fan of this, but the Command structure is kinda forcing my hand
+        OpenSaveAs?.Invoke(this, new EventArgs());
+    }
+
+    public void Export()
+    {
+
     }
 }

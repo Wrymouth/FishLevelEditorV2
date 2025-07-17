@@ -63,6 +63,12 @@ namespace FishLevelEditor2.Logic
             InitializeRect(startingHeight, startingWidth, 0, 0);
         }
 
+        // empty constructor for Json Deserialize
+        public Level()
+        {
+            
+        }
+
         public void InitializeRect(int height, int width, uint metatile, uint palette)
         {
             for (int x = 0; x < width; x++)

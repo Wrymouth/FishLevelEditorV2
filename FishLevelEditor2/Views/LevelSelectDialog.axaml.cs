@@ -13,10 +13,6 @@ public partial class LevelSelectDialog : Window
     public LevelSelectDialog()
     {
         InitializeComponent();
-        // test level + metatile set until saving/loading a project works
-        Session.Project.MetatileSets.Add(new MetatileSet("Test Metatiles"));
-        Session.Project.Levels.Add(new("Test", @"C:\Users\jacco\Documenten\Projects\NES\FF-City\ff-city\src\chr\highway.chr", 32, 27, 0));
-        // ---
     }
 
     private void LoadLevelButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

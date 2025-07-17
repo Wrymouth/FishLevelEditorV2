@@ -2,20 +2,27 @@
 {
     public class ScreenMetatile
     {
-        public uint Metatile { get; set; }
-        public uint Palette { get; set; }
+        // metatile index and palette index, shortened for smaller json file size
+        public uint mi { get; set; }
+        public uint pi { get; set; }
 
         public ScreenMetatile(uint metatile, uint palette)
         {
-            Metatile = metatile;
-            Palette = palette;
+            mi = metatile;
+            pi = palette;
         }
 
         // copy
         public ScreenMetatile(ScreenMetatile screenMetatile)
         {
-            Metatile = screenMetatile.Metatile;
-            Palette = screenMetatile.Palette;
+            mi = screenMetatile.mi;
+            pi = screenMetatile.pi;
+        }
+
+        // empty constructor for Json Deserialize
+        public ScreenMetatile()
+        {
+            
         }
     }
 }

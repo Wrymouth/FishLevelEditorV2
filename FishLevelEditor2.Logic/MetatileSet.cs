@@ -12,5 +12,11 @@
             Metatiles = [];
             Metatiles.Add(new Metatile("Empty", Metatile.MetatileType.Air, 0,0,0,0));
         }
+
+        // empty constructor for Json Deserialize
+        public MetatileSet()
+        {
+            
+        }
     }
 }

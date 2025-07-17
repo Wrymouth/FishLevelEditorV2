@@ -22,5 +22,11 @@
             Tiles = [tile0, tile1, tile2, tile3];
         }
 
+        // empty constructor for Json Deserialize
+        public Metatile()
+        {
+            
+        }
+
     }
 }

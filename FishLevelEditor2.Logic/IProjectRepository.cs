@@ -8,7 +8,7 @@ namespace FishLevelEditor2.Logic
 {
     public interface IProjectRepository
     {
-        public void Save(string fileName);
+        public void Save(Project project, string fileName);
 
         public Project Load(string fileName);
     }

@@ -15,7 +15,7 @@ namespace FishLevelEditor2.EditorActions
         public int PosX { get; set; }
         public int PosY { get; set; }
 
-        public override string LogMessage => $"Place metatile {NewMetatile.Metatile} at X = {PosX} Y = {PosY}";
+        public override string LogMessage => $"Place metatile {NewMetatile.mi} at X = {PosX} Y = {PosY}";
 
         public PlaceMetatileInLevelAction(ScreenMetatile newMetatile, ScreenMetatile previousMetatile, int posX, int posY)
         {

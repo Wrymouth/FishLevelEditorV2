@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace FishLevelEditor2.Logic
 
         public int MostRecentLevelIndex { get; set; }
 
+        [JsonIgnore]
         public IProjectRepository ProjectRepository { get; set; }
 
         public Project(IProjectRepository projectRepository)
@@ -21,6 +23,7 @@ namespace FishLevelEditor2.Logic
             ProjectRepository = projectRepository;
             Levels = [];
             MetatileSets = [];
+            MostRecentLevelIndex = -1;
         }
 
         public Project(IProjectRepository projectRepository, ObservableCollection<Level> levels, ObservableCollection<CHRBank> chrBanks, List<MetatileSet> metatileSets)
@@ -28,6 +31,17 @@ namespace FishLevelEditor2.Logic
             ProjectRepository = projectRepository;
             Levels = levels;
             MetatileSets = metatileSets;
+        }
+
+        // empty constructor for Json Deserialize
+        public Project()
+        {
+
+        }
+
+        public void Save(string filePath)
+        {
+            ProjectRepository.Save(this, filePath);
         }
     }
 }

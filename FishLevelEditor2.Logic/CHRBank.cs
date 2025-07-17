@@ -1,11 +1,26 @@
-﻿using System.Numerics;
+﻿using Newtonsoft.Json;
+using System.Numerics;
 
 namespace FishLevelEditor2.Logic
 {
     public class CHRBank
     {
-        public string FilePath { get; set; }
+        private string _filePath;
 
+        public string FilePath
+        {
+            get => _filePath;
+            set
+            {
+                _filePath = value;
+                if (_filePath is not null)
+                {
+                    Decode();
+                }
+            }
+        }
+
+        [JsonIgnore]
         public string FileName
         {
             get
@@ -15,13 +30,18 @@ namespace FishLevelEditor2.Logic
         }
         public int Size { get; set; }
 
+        [JsonIgnore]
         public List<Tile> Tiles { get; set; }
 
         public CHRBank(string filePath)
         {
-            FilePath = filePath;
             Tiles = [];
-            Decode();
+            FilePath = filePath;
+        }
+
+        public CHRBank()
+        {
+            Tiles = [];
         }
 
         private void Decode()

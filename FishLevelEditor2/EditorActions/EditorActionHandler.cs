@@ -17,24 +17,23 @@ namespace FishLevelEditor2.EditorActions
         public const int ACTION_LIST_SIZE = 256;
 
         public static event EditorActionLogEventHandler Log;
+        
         public static List<EditorAction> EditorActions { get; set; }
-
-        // index of the last performed action
-        public static int ActionListIndex { get; set; }
+        public static int LastPerformedActionIndex { get; set; }
 
         static EditorActionHandler()
         {
             EditorActions = [];
-            ActionListIndex = -1;
+            LastPerformedActionIndex = -1;
         }
 
         public static void Do(EditorAction action, MainViewModel mvm)
         {
-            ActionListIndex++;
-            if (ActionListIndex < EditorActions.Count)
+            LastPerformedActionIndex++;
+            if (LastPerformedActionIndex < EditorActions.Count)
             {
                 // remove all elements after the last performed action
-                EditorActions.RemoveRange(ActionListIndex, (EditorActions.Count - ActionListIndex));
+                EditorActions.RemoveRange(LastPerformedActionIndex, (EditorActions.Count - LastPerformedActionIndex));
             }
             EditorActions.Add(action);
             action.Do(mvm);
@@ -43,27 +42,27 @@ namespace FishLevelEditor2.EditorActions
 
         public static void Undo(MainViewModel mvm)
         {
-            if (ActionListIndex < 0)
+            if (LastPerformedActionIndex < 0)
             {
                 Log?.Invoke(null, new("Nothing to undo."));
                 return;
             }
-            EditorActions[ActionListIndex].Undo(mvm);
-            Log?.Invoke(null, new($"Undo {EditorActions[ActionListIndex].LogMessage}"));
-            ActionListIndex--;
+            EditorActions[LastPerformedActionIndex].Undo(mvm);
+            Log?.Invoke(null, new($"Undo {EditorActions[LastPerformedActionIndex].LogMessage}"));
+            LastPerformedActionIndex--;
 
         }
 
         public static void Redo(MainViewModel mvm)
         {
-            if (ActionListIndex >= EditorActions.Count - 1)
+            if (LastPerformedActionIndex >= EditorActions.Count - 1)
             {
                 Log?.Invoke(null, new("Nothing to redo."));
                 return;
             }
-            ActionListIndex++;
-            EditorActions[ActionListIndex].Do(mvm);
-            Log?.Invoke(null, new($"Redo {EditorActions[ActionListIndex].LogMessage}"));
+            LastPerformedActionIndex++;
+            EditorActions[LastPerformedActionIndex].Do(mvm);
+            Log?.Invoke(null, new($"Redo {EditorActions[LastPerformedActionIndex].LogMessage}"));
         }
 
     }

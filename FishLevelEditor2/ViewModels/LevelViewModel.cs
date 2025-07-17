@@ -27,7 +27,7 @@ namespace FishLevelEditor2.ViewModels
                 for (int x = 0; x < Level.Width; x++)
                 {
                     ScreenMetatile screenMetatile = Level.ScreenMetatiles[x][y];
-                    LevelBitmap.DrawMetatile(Level.MetatileSet.Metatiles[(int)screenMetatile.Metatile], posX, posY, Level.BackgroundPalettes[screenMetatile.Palette]);
+                    LevelBitmap.DrawMetatile(Level.MetatileSet.Metatiles[(int)screenMetatile.mi], posX, posY, Level.BackgroundPalettes[screenMetatile.pi]);
                     posX += 16;
                 }
                 posX = 0;

@@ -13,5 +13,11 @@
                 color3
                 ];
         }
+
+        // empty constructor for Json Deserialize
+        public Palette()
+        {
+            
+        }
     }
 }
