@@ -21,7 +21,6 @@ public partial class OpenProjectDialog : Window
 
     private async void LoadProjectButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        // unimplemented, open file dialog
         var opdViewModel = DataContext as OpenProjectDialogViewModel;
         
         // Get top level from the current control. Alternatively, you can use Window reference instead.

@@ -64,6 +64,8 @@ public partial class MainWindow : Window
 
         if (saveFileLocation is not null)
         {
+            Session.Config.RecentProjectFilePath = saveFileLocation.Path.AbsolutePath;
+            Session.Config.Save();
             Session.Project.Save(saveFileLocation.Path.AbsolutePath);
         }
     }

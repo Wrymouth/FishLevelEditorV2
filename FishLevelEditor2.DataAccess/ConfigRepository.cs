@@ -1,5 +1,6 @@
 ﻿using FishLevelEditor2.Logic;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace FishLevelEditor2.DataAccess
 {
@@ -13,9 +14,18 @@ namespace FishLevelEditor2.DataAccess
         /// Saves the file to disk
         /// </summary>
         /// <returns>whether the save was successful or not</returns>
-        public bool Save()
+        public bool Save(Config config)
         {
-            return false;
+            string fileName = CONFIG_FILEPATH;
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+
+            if (!File.Exists(filePath))
+            {
+                File.Create(filePath);
+            }
+            string json = JsonConvert.SerializeObject(config);
+            File.WriteAllText(filePath, json);
+            return true;
         }
 
         public Config Load()

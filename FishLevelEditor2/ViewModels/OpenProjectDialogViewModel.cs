@@ -22,6 +22,8 @@ namespace FishLevelEditor2.ViewModels
         public void LoadProject(string filePath)
         {
             Project project = new ProjectRepository().Load(filePath);
+            Session.Config.RecentProjectFilePath = filePath;
+            Session.Config.Save();
             OpenProject(project);
         }
 

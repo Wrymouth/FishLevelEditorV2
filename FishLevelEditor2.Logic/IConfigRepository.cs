@@ -8,7 +8,7 @@ namespace FishLevelEditor2.Logic
 {
     public interface IConfigRepository
     {
-        public bool Save();
+        public bool Save(Config config);
 
         public Config Load();
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,9 +12,11 @@ namespace FishLevelEditor2.Logic
         public string? MasterPaletteFilePath { get; set; }
         public string? RecentProjectFilePath { get; set; }
 
+        [JsonIgnore]
         public IConfigRepository ConfigRepository { get; set; }
 
-        public Config(){}
+        // empty constructor for Json Deserialize
+        public Config() { }
         public Config(IConfigRepository configRepository)
         {
             ConfigRepository = configRepository;
@@ -27,6 +30,11 @@ namespace FishLevelEditor2.Logic
             ConfigRepository = configRepository;
             MasterPaletteFilePath = masterPaletteFilePath;
             RecentProjectFilePath = recentProjectFilePath;
+        }
+
+        public void Save()
+        {
+            ConfigRepository.Save(this);
         }
     }
 }
