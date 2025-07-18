@@ -21,6 +21,8 @@ public class MainViewModel : ViewModelBase
     public CHRBankViewModel CHRBankViewModel { get; set; }
     public SelectedMetatileViewModel SelectedMetatileViewModel { get; set; }
     public MetatileSetViewModel MetatileSetViewModel { get; set; }
+    public MasterPaletteViewModel MasterPaletteViewModel { get; set; }
+    public PalettesViewModel PalettesViewModel { get; set; }
     public LevelViewModel LevelViewModel { get; set; }
     public ReactiveCommand<Unit, Unit> UndoCommand { get; }
     public ReactiveCommand<Unit, Unit> RedoCommand { get; }
@@ -34,6 +36,7 @@ public class MainViewModel : ViewModelBase
         CHRBankViewModel = new(level.BackgroundCHR);
         MetatileSetViewModel = new(level.MetatileSet, level.BackgroundCHR);
         SelectedMetatileViewModel = new(0, level.BackgroundCHR);
+        MasterPaletteViewModel = new();
         UndoCommand = ReactiveCommand.Create(Undo);
         RedoCommand = ReactiveCommand.Create(Redo);
         SaveCommand = ReactiveCommand.Create(Save);

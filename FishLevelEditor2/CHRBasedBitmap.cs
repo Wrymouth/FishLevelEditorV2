@@ -63,7 +63,7 @@ namespace FishLevelEditor2
                     if (destX < 0 || destX >= width) continue;
 
                     int pixelIndex = tileY * Tile.TILE_WIDTH + tileX;
-                    SKColor color = ResolvePaletteColor(tile.Pixels[pixelIndex], palette);
+                    SKColor color = BitmapUtils.ResolvePaletteColor(tile.Pixels[pixelIndex], palette);
 
 
                     int offset = destY * stride + destX * 4;
@@ -75,19 +75,6 @@ namespace FishLevelEditor2
                     buffer[offset + 3] = 255;
                 }
             }
-        }
-
-        /// <summary>
-        /// Takes a 2bpp color index, converts it to RGBA
-        /// </summary>
-        /// <param name="paletteIndex">the 2bpp color index</param>
-        /// <param name="palette">the palette used</param>
-        /// <returns>RGBA8888 color value</returns>
-        private SKColor ResolvePaletteColor(uint paletteIndex, Palette palette)
-        {
-            uint colorValue = Session.MasterPalette.Colors[palette.Colors[paletteIndex]];
-            Color color = Color.FromArgb((byte)(colorValue & 0xFF), (byte)(colorValue >> 24), (byte)((colorValue >> 16) & 0xFF), (byte)((colorValue >> 8) & 0xFF));
-            return new SKColor(color.R, color.G, color.B, color.A);
         }
     }
 }

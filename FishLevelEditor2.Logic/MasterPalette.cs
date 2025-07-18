@@ -6,7 +6,7 @@ namespace FishLevelEditor2.Logic
 {
     public class MasterPalette
     {
-        const int AMOUNT_COLORS = 64;
+        public const int AMOUNT_COLORS = 64;
         public uint[] Colors { get; set; }
 
         public MasterPalette(string filePath)

@@ -49,6 +49,12 @@ public partial class MainWindow : Window
         SetLogMessage($"Successfully loaded level {mvm.LevelViewModel.Level.Name}");
     }
 
+    // constructor for preview window
+    public MainWindow()
+    {
+        InitializeComponent();
+    }
+
     private async void HandleSaveAs(object sender, EventArgs e)
     {
         // Get top level from the current control. Alternatively, you can use Window reference instead.
@@ -134,10 +140,9 @@ public partial class MainWindow : Window
         Repaint();
     }
 
-    // constructor for preview window
-    public MainWindow()
+    private void SetLogMessage(string message)
     {
-        InitializeComponent();
+        LogsLabel.Content = message;
     }
 
     private void Repaint()
@@ -146,11 +151,23 @@ public partial class MainWindow : Window
         RepaintSelectedMetatile();
         RepaintMetatileSet();
         RepaintLevel();
+        RepaintMasterPalette();
+        //RepaintPalettes();
     }
 
-    private void SetLogMessage(string message)
+    private void RepaintPalettes()
     {
-        LogsLabel.Content = message;
+        throw new NotImplementedException();
+    }
+
+    private void RepaintMasterPalette()
+    {
+        MainViewModel mvm = DataContext as MainViewModel;
+        MasterPaletteViewModel mpvm = mvm.MasterPaletteViewModel;
+        mpvm.Display();
+        SetLevelImageDimensions();
+        MasterPaletteBitmap.Bitmap = mpvm.MasterPaletteBitmap;
+        MasterPaletteBitmap.InvalidateVisual();
     }
 
     private void RepaintLevel()

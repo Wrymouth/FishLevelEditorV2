@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:FishLevelEditor2.Views"
-        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="820"
-        Width="1200" Height="820"
+        mc:Ignorable="d" d:DesignWidth="1600" d:DesignHeight="900"
+        Width="1600" Height="900"
         x:Class="FishLevelEditor2.Views.MainWindow"
         Icon="/Assets/fish.ico"
         CanResize="False"
@@ -19,11 +19,10 @@
   <DockPanel>
     <Grid>
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="70*"/>
-        <ColumnDefinition Width="30*"/>
+        <ColumnDefinition Width="80*"/>
+        <ColumnDefinition Width="20*"/>
       </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
-        <RowDefinition Height="20"/>
         <RowDefinition Height="20"/>
         <RowDefinition Height="*"/>
         <RowDefinition Height="20"/>
@@ -37,12 +36,11 @@
           <MenuItem HotKey="Ctrl+Shift+S" Header="Save as..." x:CompileBindings="False" Command="{Binding SaveAsCommand}"></MenuItem>
           <Separator/>
           <MenuItem HotKey="Ctrl+E" Header="Export level..." x:CompileBindings="False" Command="{Binding ExportCommand}"></MenuItem>
+          <Separator/>
+          <MenuItem Header="Preferences..." x:CompileBindings="False" Command="{Binding PreferencesCommand}"></MenuItem>
+          <Separator/>
+          <MenuItem Header="Exit" x:CompileBindings="False" Command="{Binding ExitCommand}"></MenuItem>
         </MenuItem>
-        <MenuItem Header="Settings">
-          
-        </MenuItem>
-      </Menu>
-      <Menu Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" >
         <MenuItem HotKey="Ctrl+Z" x:CompileBindings="False" Command="{Binding UndoCommand}">
           <MenuItem.Header>
             <PathIcon Height="10" Width="10" Data="{StaticResource arrow_undo_regular}"/>
@@ -54,7 +52,7 @@
           </MenuItem.Header>
         </MenuItem>
       </Menu>
-      <ScrollViewer Grid.ColumnSpan="1" Grid.Column="0" Grid.Row="2" Focusable="True" KeyDown="LevelScrollViewer_KeyDown" KeyUp="LevelScrollViewer_KeyUp" Background="LightGray" Name="LevelScrollViewer">
+      <ScrollViewer Grid.ColumnSpan="1" Grid.Column="0" Grid.Row="1" Focusable="True" KeyDown="LevelScrollViewer_KeyDown" KeyUp="LevelScrollViewer_KeyUp" Background="LightGray" Name="LevelScrollViewer">
         <Grid Margin="32">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -73,12 +71,33 @@
           <Button Click="AddRowBelowButton_Click" Grid.Column="1" Grid.Row="2" Name="AddRowBelowButton" Content="+"/>
         </Grid>
       </ScrollViewer>
-      <DockPanel Grid.Column="1" Grid.Row="2">
+      <DockPanel Grid.Column="1" Grid.Row="1">
         <TabControl>
           <TabItem Header="Metatiles">
             <StackPanel>
               <!--Master Palette-->
+              <HeaderedContentControl Header="Master Palette">
+                <StackPanel>
+                  <SKBitmapControl Height="64" Width="256" Name="MasterPaletteBitmap"/>
+                </StackPanel>
+              </HeaderedContentControl>
               <!--Palettes-->
+              <HeaderedContentControl Header="Level Palettes">
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                  </Grid.RowDefinitions>
+                  <SKBitmapControl Grid.Column="0" Grid.Row="0" Name="Palette0Bitmap"/>
+                  <SKBitmapControl Grid.Column="1" Grid.Row="0" Name="Palette1Bitmap"/>
+                  <SKBitmapControl Grid.Column="0" Grid.Row="1" Name="Palette2Bitmap"/>
+                  <SKBitmapControl Grid.Column="1" Grid.Row="1" Name="Palette3Bitmap"/>
+                </Grid>
+              </HeaderedContentControl>
               <!--Metatile Set-->
               <HeaderedContentControl Header="Metatile list">
                 <StackPanel>
@@ -129,7 +148,7 @@
         </TabControl>
       </DockPanel>
 
-      <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+      <DockPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
         <Label Content="Test" Name="LogsLabel"/>
       </DockPanel>
     </Grid>
