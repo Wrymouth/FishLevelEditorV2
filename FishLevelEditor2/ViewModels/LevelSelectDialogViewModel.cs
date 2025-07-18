@@ -22,6 +22,7 @@ namespace FishLevelEditor2.ViewModels
 
         public void LoadLevel(int levelIndex)
         {
+            Project.MostRecentLevelIndex = levelIndex;
             LoadLevelSuccess?.Invoke(
                 this,
                 new LoadLevelEventArgs(levelIndex)

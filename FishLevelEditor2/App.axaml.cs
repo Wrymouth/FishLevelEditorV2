@@ -6,6 +6,7 @@ using FishLevelEditor2.Logic;
 using FishLevelEditor2.ViewModels;
 using FishLevelEditor2.Views;
 using System;
+using System.IO;
 
 namespace FishLevelEditor2;
 
@@ -23,39 +24,40 @@ public partial class App : Application
             // check if a project already exists in the config
             Session.Config = new(new ConfigRepository());
             Session.MasterPalette = new(Session.Config.MasterPaletteFilePath);
-            if (!(string.IsNullOrWhiteSpace(Session.Config.RecentProjectFilePath)))
+            if (File.Exists(Session.Config.RecentProjectFilePath))
             {
                 // load most recent project from disk, load most recent level if available, open main editor with both
                 Project project = new ProjectRepository().Load(Session.Config.RecentProjectFilePath);
-                if (project is not null)
+                Session.Project = project;
+                if (project.MostRecentLevelIndex >= 0)
                 {
-                    Session.Project = project;
-                    if (project.MostRecentLevelIndex >= 0)
+                    var mainWindow = new MainWindow(project.MostRecentLevelIndex);
+                    desktop.MainWindow = mainWindow;
+                    mainWindow.Show();
+                }
+                else
+                {
+                    var lsdViewModel = new LevelSelectDialogViewModel();
+                    var levelSelectDialog = new LevelSelectDialog()
                     {
-
-                    }
-                    else
+                        DataContext = lsdViewModel
+                    };
+                    levelSelectDialog.Show();
+                    lsdViewModel.LoadLevelSuccess += (sender, args) =>
                     {
-                        var lsdViewModel = new LevelSelectDialogViewModel();
-                        var levelSelectDialog = new LevelSelectDialog()
-                        {
-                            DataContext = lsdViewModel
-                        };
-                        levelSelectDialog.Show();
-                        lsdViewModel.LoadLevelSuccess += (sender, args) =>
-                        {
-                            var mainWindow = new MainWindow(args.LevelIndex);
-                            desktop.MainWindow = mainWindow;
-                            mainWindow.Show();
-                            levelSelectDialog.Close();
-                        };
-                        desktop.MainWindow = levelSelectDialog;
-                    }
+                        var mainWindow = new MainWindow(args.LevelIndex);
+                        desktop.MainWindow = mainWindow;
+                        mainWindow.Show();
+                        levelSelectDialog.Close();
+                    };
+                    desktop.MainWindow = levelSelectDialog;
 
                 }
             }
             else
             {
+                Session.Config.RecentProjectFilePath = "";
+                Session.Config.Save();
                 var opdViewModel = new OpenProjectDialogViewModel();
                 OpenProjectDialog openProjectDialog = new()
                 {
