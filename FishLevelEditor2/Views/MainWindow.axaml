@@ -78,7 +78,7 @@
               <!--Master Palette-->
               <HeaderedContentControl Header="Master Palette">
                 <StackPanel>
-                  <SKBitmapControl Height="64" Width="256" Name="MasterPaletteBitmap"/>
+                  <SKBitmapControl PointerPressed="MasterPaletteBitmap_PointerPressed" Height="64" Width="256" Name="MasterPaletteBitmap"/>
                 </StackPanel>
               </HeaderedContentControl>
               <!--Palettes-->
@@ -94,19 +94,19 @@
                   </Grid.RowDefinitions>
                   <DockPanel Width="80" Grid.Column="0" Grid.Row="0">
                     <Label HorizontalAlignment="Left">0: </Label>
-                    <SKBitmapControl HorizontalAlignment="Right" Height="16" Width="64" Name="Palette0Bitmap"/>
+                    <SKBitmapControl DataContext="0" PointerPressed="PaletteBitmap_PointerPressed" HorizontalAlignment="Right" Height="16" Width="64" Name="Palette0Bitmap"/>
                   </DockPanel>
                   <DockPanel Width="80" Grid.Column="1" Grid.Row="0">
                     <Label HorizontalAlignment="Left">1: </Label>
-                    <SKBitmapControl HorizontalAlignment="Right" Height="16" Width="64" Name="Palette1Bitmap"/>
+                    <SKBitmapControl DataContext="1" PointerPressed="PaletteBitmap_PointerPressed" HorizontalAlignment="Right" Height="16" Width="64" Name="Palette1Bitmap"/>
                   </DockPanel>
                   <DockPanel Width="80" Grid.Column="0" Grid.Row="1">
                     <Label HorizontalAlignment="Left">2: </Label>
-                    <SKBitmapControl HorizontalAlignment="Right" Height="16" Width="64" Name="Palette2Bitmap"/>
+                    <SKBitmapControl DataContext="2" PointerPressed="PaletteBitmap_PointerPressed" HorizontalAlignment="Right" Height="16" Width="64" Name="Palette2Bitmap"/>
                   </DockPanel>
                   <DockPanel Width="80" Grid.Column="1" Grid.Row="1">
                     <Label HorizontalAlignment="Left">3: </Label>
-                    <SKBitmapControl HorizontalAlignment="Right" Height="16" Width="64" Name="Palette3Bitmap"/>
+                    <SKBitmapControl DataContext="3" PointerPressed="PaletteBitmap_PointerPressed" HorizontalAlignment="Right" Height="16" Width="64" Name="Palette3Bitmap"/>
                   </DockPanel>
                 </Grid>
               </HeaderedContentControl>

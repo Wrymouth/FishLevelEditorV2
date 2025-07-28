@@ -84,7 +84,7 @@ public class MainViewModel : ViewModelBase
                 return;
             }
 
-            EditorActionHandler.Do(new PlaceMetatileInLevelAction(new ScreenMetatile(metatileIndex, 0), level.ScreenMetatiles[posX][posY], posX, posY), this);
+            EditorActionHandler.Do(new PlaceMetatileInLevelAction(new ScreenMetatile(metatileIndex, PalettesViewModel.SelectedPaletteIndex), level.ScreenMetatiles[posX][posY], posX, posY), this);
             Repaint?.Invoke(this, new EventArgs());
         }
     }

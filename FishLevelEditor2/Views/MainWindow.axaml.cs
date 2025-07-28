@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Platform;
+using Avalonia.Controls.Skia;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using FishLevelEditor2.EditorActions;
@@ -189,7 +190,7 @@ public partial class MainWindow : Window
     {
         MainViewModel mvm = (DataContext as MainViewModel);
         MetatileSetViewModel metatileSetViewModel = mvm.MetatileSetViewModel;
-        metatileSetViewModel.Display(mvm.LevelViewModel.Level.BackgroundPalettes[0]);
+        metatileSetViewModel.Display(mvm.LevelViewModel.Level.BackgroundPalettes[mvm.PalettesViewModel.SelectedPaletteIndex]);
         MetatileSetBitmap.Bitmap = metatileSetViewModel.MetatileSetBitmap.Bitmap;
         MetatileSetBitmap.InvalidateVisual();
     }
@@ -198,16 +199,16 @@ public partial class MainWindow : Window
     {
         MainViewModel mvm = (DataContext as MainViewModel);
         SelectedMetatileViewModel selectedMetatileViewModel = mvm.SelectedMetatileViewModel;
-        selectedMetatileViewModel.Display(mvm.LevelViewModel.Level.BackgroundPalettes[0], mvm.LevelViewModel.Level.MetatileSet);
+        selectedMetatileViewModel.Display(mvm.LevelViewModel.Level.BackgroundPalettes[mvm.PalettesViewModel.SelectedPaletteIndex], mvm.LevelViewModel.Level.MetatileSet);
         SelectedMetatileBitmap.Bitmap = selectedMetatileViewModel.SelectedMetatileBitmap.Bitmap;
         SelectedMetatileBitmap.InvalidateVisual();
     }
 
     private void RepaintCHR()
     {
-        MainViewModel mainViewModel = (DataContext as MainViewModel);
-        CHRBankViewModel chrBankViewModel = mainViewModel.CHRBankViewModel;
-        chrBankViewModel.Display(mainViewModel.LevelViewModel.Level.BackgroundPalettes[0]);
+        MainViewModel mvm = (DataContext as MainViewModel);
+        CHRBankViewModel chrBankViewModel = mvm.CHRBankViewModel;
+        chrBankViewModel.Display(mvm.LevelViewModel.Level.BackgroundPalettes[mvm.PalettesViewModel.SelectedPaletteIndex]);
         CHRBitmap.Bitmap = chrBankViewModel.CHRBankBitmap.Bitmap;
         CHRBitmap.InvalidateVisual();
     }
@@ -335,10 +336,32 @@ public partial class MainWindow : Window
         {
             mvm.PlaceMetatileInLevel(e.GetPosition(MainLevelBitmap));
         }
-        else
+        else if (point.Properties.IsRightButtonPressed)
         {
             mvm.PickMetatile(e.GetPosition(MainLevelBitmap));
         }
 
+    }
+
+    private void PaletteBitmap_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+    {
+        MainViewModel mvm = (DataContext as MainViewModel);
+        SKBitmapControl paletteBitmap = sender as SKBitmapControl;
+        if (int.TryParse((string) paletteBitmap.DataContext, out int paletteIndex))
+        {
+            mvm.PalettesViewModel.SelectedPaletteIndex = (uint) paletteIndex;
+            mvm.PalettesViewModel.SelectedPaletteColorIndex = mvm.GetMouseTileIndex(e.GetPosition(paletteBitmap), 8, 4, 3);
+            Repaint();
+        }
+    }
+
+    private void MasterPaletteBitmap_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+    {
+        MainViewModel mvm = (DataContext as MainViewModel);
+        uint selectedColor = mvm.GetMouseTileIndex(e.GetPosition(MasterPaletteBitmap), 8, 16, 63);
+        if (selectedColor == 0x0D || selectedColor == 0x1D || (selectedColor & 0x0E) == 0x0E)
+        {
+            selectedColor = 0x0F;
+        }
     }
 }

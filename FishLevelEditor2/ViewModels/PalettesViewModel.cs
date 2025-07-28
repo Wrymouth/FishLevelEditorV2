@@ -14,6 +14,8 @@ namespace FishLevelEditor2.ViewModels
         public const int PALETTE_DISPLAY_HEIGHT = 8;
         public const int AMOUNT_COLORS_PALETTE = 4;
         public Palette[] Palettes { get; set; }
+        public uint SelectedPaletteIndex { get; set; }
+        public uint SelectedPaletteColorIndex { get; set; }
 
         public SKBitmap Palette0Bitmap { get; set; }
         public SKBitmap Palette1Bitmap { get; set; }
