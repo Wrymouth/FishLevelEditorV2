@@ -83,19 +83,31 @@
               </HeaderedContentControl>
               <!--Palettes-->
               <HeaderedContentControl Header="Level Palettes">
-                <Grid>
+                <Grid Width="240">
                   <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
                   </Grid.ColumnDefinitions>
                   <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
                   </Grid.RowDefinitions>
-                  <SKBitmapControl Grid.Column="0" Grid.Row="0" Name="Palette0Bitmap"/>
-                  <SKBitmapControl Grid.Column="1" Grid.Row="0" Name="Palette1Bitmap"/>
-                  <SKBitmapControl Grid.Column="0" Grid.Row="1" Name="Palette2Bitmap"/>
-                  <SKBitmapControl Grid.Column="1" Grid.Row="1" Name="Palette3Bitmap"/>
+                  <DockPanel Width="80" Grid.Column="0" Grid.Row="0">
+                    <Label HorizontalAlignment="Left">0: </Label>
+                    <SKBitmapControl HorizontalAlignment="Right" Height="16" Width="64" Name="Palette0Bitmap"/>
+                  </DockPanel>
+                  <DockPanel Width="80" Grid.Column="1" Grid.Row="0">
+                    <Label HorizontalAlignment="Left">1: </Label>
+                    <SKBitmapControl HorizontalAlignment="Right" Height="16" Width="64" Name="Palette1Bitmap"/>
+                  </DockPanel>
+                  <DockPanel Width="80" Grid.Column="0" Grid.Row="1">
+                    <Label HorizontalAlignment="Left">2: </Label>
+                    <SKBitmapControl HorizontalAlignment="Right" Height="16" Width="64" Name="Palette2Bitmap"/>
+                  </DockPanel>
+                  <DockPanel Width="80" Grid.Column="1" Grid.Row="1">
+                    <Label HorizontalAlignment="Left">3: </Label>
+                    <SKBitmapControl HorizontalAlignment="Right" Height="16" Width="64" Name="Palette3Bitmap"/>
+                  </DockPanel>
                 </Grid>
               </HeaderedContentControl>
               <!--Metatile Set-->

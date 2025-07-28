@@ -152,12 +152,18 @@ public partial class MainWindow : Window
         RepaintMetatileSet();
         RepaintLevel();
         RepaintMasterPalette();
-        //RepaintPalettes();
+        RepaintPalettes();
     }
 
     private void RepaintPalettes()
     {
-        throw new NotImplementedException();
+        MainViewModel mvm = DataContext as MainViewModel;
+        PalettesViewModel pvm = mvm.PalettesViewModel;
+        pvm.Display();
+        Palette0Bitmap.Bitmap = pvm.Palette0Bitmap;
+        Palette1Bitmap.Bitmap = pvm.Palette1Bitmap;
+        Palette2Bitmap.Bitmap = pvm.Palette2Bitmap;
+        Palette3Bitmap.Bitmap = pvm.Palette3Bitmap;
     }
 
     private void RepaintMasterPalette()
@@ -165,7 +171,6 @@ public partial class MainWindow : Window
         MainViewModel mvm = DataContext as MainViewModel;
         MasterPaletteViewModel mpvm = mvm.MasterPaletteViewModel;
         mpvm.Display();
-        SetLevelImageDimensions();
         MasterPaletteBitmap.Bitmap = mpvm.MasterPaletteBitmap;
         MasterPaletteBitmap.InvalidateVisual();
     }

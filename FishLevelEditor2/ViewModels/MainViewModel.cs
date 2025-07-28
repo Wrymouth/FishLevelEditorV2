@@ -37,6 +37,7 @@ public class MainViewModel : ViewModelBase
         MetatileSetViewModel = new(level.MetatileSet, level.BackgroundCHR);
         SelectedMetatileViewModel = new(0, level.BackgroundCHR);
         MasterPaletteViewModel = new();
+        PalettesViewModel = new(level.BackgroundPalettes);
         UndoCommand = ReactiveCommand.Create(Undo);
         RedoCommand = ReactiveCommand.Create(Redo);
         SaveCommand = ReactiveCommand.Create(Save);
