@@ -363,5 +363,9 @@ public partial class MainWindow : Window
         {
             selectedColor = 0x0F;
         }
+        uint previousColor = mvm.LevelViewModel.Level.BackgroundPalettes[mvm.PalettesViewModel.SelectedPaletteIndex].Colors[mvm.PalettesViewModel.SelectedPaletteColorIndex];
+
+        EditorActionHandler.Do(new SetPaletteColorAction(mvm.PalettesViewModel.SelectedPaletteIndex, mvm.PalettesViewModel.SelectedPaletteColorIndex, previousColor, selectedColor), mvm);
+        Repaint();
     }
 }
