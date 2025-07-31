@@ -1,11 +1,13 @@
 ﻿using Avalonia;
 using Avalonia.Platform.Storage;
+using FishLevelEditor2.DataAccess;
 using FishLevelEditor2.EditorActions;
 using FishLevelEditor2.Logic;
 using ReactiveUI;
 using System;
 using System.Diagnostics;
 using System.Reactive;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FishLevelEditor2.ViewModels;
@@ -32,6 +34,7 @@ public class MainViewModel : ViewModelBase
 
     public MainViewModel(Level level)
     {
+        level.LevelRepository = new LevelRepository(new ExportSettings(false, ExportSettings.ExportFormat.Columns));
         LevelViewModel = new(level);
         CHRBankViewModel = new(level.BackgroundCHR);
         MetatileSetViewModel = new(level.MetatileSet, level.BackgroundCHR);
@@ -132,6 +135,6 @@ public class MainViewModel : ViewModelBase
 
     public void Export()
     {
-
+        OpenExport?.Invoke(this, new EventArgs());
     }
 }

@@ -10,6 +10,14 @@
             Spike,
             Climb
         }
+        public enum Entries : int
+        {
+            TopLeft = 0,
+            TopRight = 1,
+            BottomLeft = 2,
+            BottomRight = 3,
+            Collision = 4
+        }
 
         public string Name { get; set; }
         public MetatileType Type { get; set; }
@@ -25,7 +33,7 @@
         // empty constructor for Json Deserialize
         public Metatile()
         {
-            
+
         }
 
     }

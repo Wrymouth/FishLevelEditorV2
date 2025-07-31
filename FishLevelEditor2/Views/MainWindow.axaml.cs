@@ -32,9 +32,10 @@ public partial class MainWindow : Window
         LevelScrollViewer.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Hidden;
         LevelScrollViewer.VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Hidden;
 
-
         mvm.Repaint += HandleRepaint;
         mvm.OpenSaveAs += HandleSaveAs;
+        mvm.OpenExport += HandleExport;
+
         EditorActionHandler.Log += HandleLog;
 
         keyRepeatTimer = new DispatcherTimer
@@ -76,6 +77,26 @@ public partial class MainWindow : Window
             Session.Project.Save(saveFileLocation.Path.AbsolutePath);
         }
     }
+
+    private async void HandleExport(object sender, EventArgs e)
+    {
+        MainViewModel mvm = DataContext as MainViewModel;
+        // Get top level from the current control. Alternatively, you can use Window reference instead.
+        var topLevel = GetTopLevel(this);
+
+        // Start async operation to open the dialog.
+        var openFolderLocation = await topLevel.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions()
+        {
+            AllowMultiple = false,
+            Title = "Select export folder"
+        });
+        if (openFolderLocation.Count > 0)
+        {
+            mvm.LevelViewModel.Level.Export(openFolderLocation[0].Path.AbsolutePath);
+        }
+    }
+
+
 
     private void SelectedMetatileViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
@@ -347,9 +368,9 @@ public partial class MainWindow : Window
     {
         MainViewModel mvm = (DataContext as MainViewModel);
         SKBitmapControl paletteBitmap = sender as SKBitmapControl;
-        if (int.TryParse((string) paletteBitmap.DataContext, out int paletteIndex))
+        if (int.TryParse((string)paletteBitmap.DataContext, out int paletteIndex))
         {
-            mvm.PalettesViewModel.SelectedPaletteIndex = (uint) paletteIndex;
+            mvm.PalettesViewModel.SelectedPaletteIndex = (uint)paletteIndex;
             mvm.PalettesViewModel.SelectedPaletteColorIndex = mvm.GetMouseTileIndex(e.GetPosition(paletteBitmap), 8, 4, 3);
             Repaint();
         }

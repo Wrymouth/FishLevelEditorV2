@@ -11,7 +11,12 @@ namespace FishLevelEditor2.Logic
 {
     public class Level
     {
+        [JsonIgnore]
+        public ILevelRepository LevelRepository { get; set; }
         public string Name { get; set; }
+
+        [JsonIgnore]
+        public string FileName { get => Name.ToLower().Replace(" ", "_").Replace("-", ""); }
         public CHRBank BackgroundCHR { get; set; }
 
         public List<List<ScreenMetatile>> ScreenMetatiles { get; set; } // [x][y]
@@ -39,7 +44,6 @@ namespace FishLevelEditor2.Logic
             Name = name;
             MetatileSetIndex = metatileSetIndex;
             BackgroundCHR = new(chrFilePath);
-            // todo fill with default palettes
             BackgroundPalettes =
             [
                 new Palette(0x0F, 0x00, 0x10, 0x30),
@@ -58,6 +62,7 @@ namespace FishLevelEditor2.Logic
             Objects = [];
             Entries = [];
             Exits = [];
+            Entries.Add(new());
             Width = startingWidth;
             Height = startingHeight;
             InitializeRect(startingHeight, startingWidth, 0, 0);
@@ -66,7 +71,7 @@ namespace FishLevelEditor2.Logic
         // empty constructor for Json Deserialize
         public Level()
         {
-            
+
         }
 
         public void InitializeRect(int height, int width, uint metatile, uint palette)
@@ -154,7 +159,7 @@ namespace FishLevelEditor2.Logic
             {
                 for (int i = 0; i < amount; i++)
                 {
-                    column.RemoveAt(column.Count-1);
+                    column.RemoveAt(column.Count - 1);
                 }
             }
             Height -= amount;
@@ -173,9 +178,14 @@ namespace FishLevelEditor2.Logic
         {
             for (int i = 0; i < amount; i++)
             {
-                ScreenMetatiles.RemoveAt(ScreenMetatiles.Count-1);
+                ScreenMetatiles.RemoveAt(ScreenMetatiles.Count - 1);
             }
             Width -= amount;
+        }
+
+        public void Export(string folderPath)
+        {
+            LevelRepository.Export(this, folderPath);
         }
     }
 }
