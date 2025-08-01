@@ -10,7 +10,7 @@
         x:Class="FishLevelEditor2.Views.MainWindow"
         Icon="/Assets/fish.ico"
         CanResize="False"
-        Title="Fish Level Editor 2.0.0">
+        Title="Fish Level Editor v2.0.0">
   <Design.DataContext>
     <vm:MainViewModel/>
   </Design.DataContext>

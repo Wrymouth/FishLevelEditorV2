@@ -31,5 +31,8 @@
     <Compile Update="Views\OpenProjectDialog.axaml.cs">
       <DependentUpon>OpenProjectDialog.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\YesNoCancelDialog.axaml.cs">
+      <DependentUpon>YesNoCancelDialog.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

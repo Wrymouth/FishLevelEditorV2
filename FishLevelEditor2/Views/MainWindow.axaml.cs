@@ -20,6 +20,7 @@ public partial class MainWindow : Window
     public MainWindow(int levelIndex)
     {
         InitializeComponent();
+        Closing += MainWindow_Closing;
         DataContext = new MainViewModel(Session.Project.Levels[levelIndex]);
         MainViewModel mvm = DataContext as MainViewModel;
         MainLevelBitmap.LevelViewModel = mvm.LevelViewModel;
@@ -33,6 +34,7 @@ public partial class MainWindow : Window
         mvm.OpenExport += HandleExport;
 
         EditorActionHandler.Log += HandleLog;
+        EditorActionHandler.UnsavedChangesEvent += HandleUnsavedChanges;
 
         keyRepeatTimer = new DispatcherTimer
         {
@@ -45,6 +47,47 @@ public partial class MainWindow : Window
 
         Repaint();
         SetLogMessage($"Successfully loaded level {mvm.LevelViewModel.Level.Name}");
+    }
+
+    private async void MainWindow_Closing(object? sender, WindowClosingEventArgs e)
+    {
+        MainViewModel mvm = DataContext as MainViewModel;
+        if (EditorActionHandler.UnsavedChanges)
+        {
+            e.Cancel = true;
+            var unsavedChangesDialog = new YesNoCancelDialog("Unsaved changes", "There are unsaved changes. Save before closing?");
+            await unsavedChangesDialog.ShowDialog(this);
+            switch (unsavedChangesDialog.Result)
+            {
+                case YesNoCancelDialog.DialogResult.Yes:
+                    mvm.Save();
+                    Closing -= MainWindow_Closing;
+                    Close();
+                    break;
+                case YesNoCancelDialog.DialogResult.No:
+                    Closing -= MainWindow_Closing;
+                    Close();
+                    break;
+                case YesNoCancelDialog.DialogResult.Cancel:
+                    e.Cancel = true;
+                    break;
+                default:
+                    e.Cancel = true;
+                    break;
+            }
+        }
+    }
+
+    private void HandleUnsavedChanges(object sender, EventArgs e)
+    {
+        if (EditorActionHandler.UnsavedChanges)
+        {
+            Title = "Fish Level Editor v2.0.0 *";
+        } 
+        else
+        {
+            Title = "Fish Level Editor v2.0.0";
+        }
     }
 
     // constructor for preview window
@@ -71,6 +114,7 @@ public partial class MainWindow : Window
             Session.Config.RecentProjectFilePath = saveFileLocation.Path.AbsolutePath;
             Session.Config.Save();
             Session.Project.Save(saveFileLocation.Path.AbsolutePath);
+            EditorActionHandler.LastSavedActionIndex = EditorActionHandler.LastPerformedActionIndex;
         }
     }
 

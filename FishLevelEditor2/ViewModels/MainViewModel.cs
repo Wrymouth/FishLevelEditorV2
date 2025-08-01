@@ -142,6 +142,7 @@ public class MainViewModel : ViewModelBase
             return;
         }
         Session.Project.Save(filePath);
+        EditorActionHandler.LastSavedActionIndex = EditorActionHandler.LastPerformedActionIndex;
     }
 
     public void SaveAs()
