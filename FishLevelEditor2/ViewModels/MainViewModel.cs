@@ -116,8 +116,7 @@ public class MainViewModel : ViewModelBase
         int posX = (int)tileIndex % level.Width;
         if (EntriesViewModel.SelectedEntry is not null)
         {
-            EntriesViewModel.SelectedEntry.PosX = posX;
-            EntriesViewModel.SelectedEntry.PosY = posY;
+            EditorActionHandler.Do(new MoveEntryAction(EntriesViewModel.SelectedEntry.PosX, EntriesViewModel.SelectedEntry.PosY, posX, posY, EntriesViewModel.SelectedEntry), this);
         }
         Repaint?.Invoke(this, new EventArgs());
     }

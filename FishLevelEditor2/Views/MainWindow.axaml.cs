@@ -405,7 +405,7 @@ public partial class MainWindow : Window
     private void AddEntryButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         MainViewModel mvm = DataContext as MainViewModel;
-        mvm.LevelViewModel.Level.Entries.Add(new LevelEntry());
+        EditorActionHandler.Do(new AddEntryAction(), mvm);
         Repaint();
     }
 
@@ -416,7 +416,7 @@ public partial class MainWindow : Window
         if (button is not null)
         {
             var levelEntry = button.DataContext as LevelEntry;
-            mvm.LevelViewModel.Level.Entries.Remove(levelEntry);
+            EditorActionHandler.Do(new RemoveEntryAction(levelEntry), mvm);
         }
         Repaint();
     }
