@@ -6,6 +6,7 @@ using FishLevelEditor2.Logic;
 using ReactiveUI;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +27,7 @@ public class MainViewModel : ViewModelBase
     public MasterPaletteViewModel MasterPaletteViewModel { get; set; }
     public PalettesViewModel PalettesViewModel { get; set; }
     public LevelViewModel LevelViewModel { get; set; }
+    public EntriesViewModel EntriesViewModel { get; set; }
     public ReactiveCommand<Unit, Unit> UndoCommand { get; }
     public ReactiveCommand<Unit, Unit> RedoCommand { get; }
     public ReactiveCommand<Unit, Unit> SaveCommand { get; }
@@ -41,6 +43,7 @@ public class MainViewModel : ViewModelBase
         SelectedMetatileViewModel = new(0, level.BackgroundCHR);
         MasterPaletteViewModel = new();
         PalettesViewModel = new(level.BackgroundPalettes);
+        EntriesViewModel = new(level.Entries);
         UndoCommand = ReactiveCommand.Create(Undo);
         RedoCommand = ReactiveCommand.Create(Redo);
         SaveCommand = ReactiveCommand.Create(Save);
@@ -104,6 +107,21 @@ public class MainViewModel : ViewModelBase
         EditorActionHandler.Do(new PickMetatileAction(SelectedMetatileViewModel.MetatileIndex, 0, posX, posY), this);
         Repaint?.Invoke(this, new EventArgs());
     }
+    
+    public void MoveEntry(Point mousePos)
+    {
+        Level level = LevelViewModel.Level;
+        uint tileIndex = GetMouseTileIndex(mousePos, 16, level.Width, (uint)(level.Width * level.Height));
+        int posY = (int)tileIndex / level.Width;
+        int posX = (int)tileIndex % level.Width;
+        if (EntriesViewModel.SelectedEntry is not null)
+        {
+            EntriesViewModel.SelectedEntry.PosX = posX;
+            EntriesViewModel.SelectedEntry.PosY = posY;
+        }
+        Repaint?.Invoke(this, new EventArgs());
+    }
+
     public void Undo()
     {
         EditorActionHandler.Undo(this);

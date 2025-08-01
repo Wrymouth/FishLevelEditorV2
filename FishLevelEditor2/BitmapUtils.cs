@@ -1,9 +1,11 @@
-﻿using Avalonia.Media.Imaging;
+﻿    using Avalonia.Controls.Skia;
+using Avalonia.Media.Imaging;
 using FishLevelEditor2.Logic;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +14,13 @@ namespace FishLevelEditor2
 {
     public static class BitmapUtils
     {
+
+        public static SKBitmap LoadSKBitmapFromFile(string filePath)
+        {
+            using var stream = File.OpenRead(filePath);
+            return SKBitmap.Decode(stream);
+        }
+
         /// <summary>
         /// Takes a 2bpp color index, converts it to RGBA
         /// </summary>

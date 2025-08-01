@@ -1,18 +1,13 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Platform;
 using Avalonia.Controls.Skia;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using FishLevelEditor2.EditorActions;
 using FishLevelEditor2.Logic;
 using FishLevelEditor2.ViewModels;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices.Marshalling;
 using static FishLevelEditor2.Logic.Metatile;
 
 namespace FishLevelEditor2.Views;
@@ -27,6 +22,7 @@ public partial class MainWindow : Window
         InitializeComponent();
         DataContext = new MainViewModel(Session.Project.Levels[levelIndex]);
         MainViewModel mvm = DataContext as MainViewModel;
+        MainLevelBitmap.LevelViewModel = mvm.LevelViewModel;
         mvm.SelectedMetatileViewModel.PropertyChanged += SelectedMetatileViewModel_PropertyChanged;
         mvm.SelectedMetatileViewModel.MetatileIndex = 0; // force a PropertyChanged
         LevelScrollViewer.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Hidden;
@@ -201,10 +197,8 @@ public partial class MainWindow : Window
     {
         MainViewModel mvm = DataContext as MainViewModel;
         LevelViewModel lvm = mvm.LevelViewModel;
-        lvm.Display();
+        MainLevelBitmap.InvalidateSurface();
         SetLevelImageDimensions();
-        MainLevelBitmap.Bitmap = lvm.LevelBitmap.Bitmap;
-        MainLevelBitmap.InvalidateVisual();
     }
 
     private void RepaintMetatileSet()
@@ -343,7 +337,7 @@ public partial class MainWindow : Window
         MainViewModel mvm = (DataContext as MainViewModel);
         var point = e.GetCurrentPoint(sender as Control);
 
-        if (point.Properties.IsLeftButtonPressed)
+        if (EditorTabs.SelectedIndex == 0 && point.Properties.IsLeftButtonPressed)
         {
             mvm.PlaceMetatileInLevel(e.GetPosition(MainLevelBitmap));
         }
@@ -355,7 +349,19 @@ public partial class MainWindow : Window
         var point = e.GetCurrentPoint(sender as Control);
         if (point.Properties.IsLeftButtonPressed)
         {
-            mvm.PlaceMetatileInLevel(e.GetPosition(MainLevelBitmap));
+            switch (EditorTabs.SelectedIndex)
+            {
+                case 0:
+                    mvm.PlaceMetatileInLevel(e.GetPosition(MainLevelBitmap));
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    mvm.MoveEntry(e.GetPosition(MainLevelBitmap));
+                    break;
+                default:
+                    break;
+            }
         }
         else if (point.Properties.IsRightButtonPressed)
         {
@@ -388,5 +394,27 @@ public partial class MainWindow : Window
 
         EditorActionHandler.Do(new SetPaletteColorAction(mvm.PalettesViewModel.SelectedPaletteIndex, mvm.PalettesViewModel.SelectedPaletteColorIndex, previousColor, selectedColor), mvm);
         Repaint();
+    }
+
+    private void EntriesListBox_SelectionChanged(object? sender, Avalonia.Controls.SelectionChangedEventArgs e)
+    {
+        MainViewModel mvm = DataContext as MainViewModel;
+        mvm.EntriesViewModel.SelectedEntry = EntriesListBox.SelectedItem as LevelEntry;
+    }
+
+    private void AddEntryButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+
+    }
+
+    private void EntryDeleteButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        MainViewModel mvm = DataContext as MainViewModel;
+        var button = sender as Button;
+        if (button is not null)
+        {
+            var levelEntry = button.DataContext as LevelEntry;
+            mvm.LevelViewModel.Level.Entries.Remove(levelEntry);
+        }
     }
 }
