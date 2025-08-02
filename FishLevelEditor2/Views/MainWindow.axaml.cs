@@ -8,6 +8,7 @@ using FishLevelEditor2.Logic;
 using FishLevelEditor2.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 using static FishLevelEditor2.Logic.Metatile;
 
 namespace FishLevelEditor2.Views;
@@ -319,13 +320,22 @@ public partial class MainWindow : Window
     private void SelectedMetatileBitmap_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
         MainViewModel mvm = (DataContext as MainViewModel);
+        var point = e.GetCurrentPoint(sender as Control);
 
         uint tileIndex = mvm.GetMouseTileIndex(e.GetPosition(SelectedMetatileBitmap), 8, 2, 3);
-        if (mvm.CHRBankViewModel.SelectedTileIndex >= 0)
+        if (point.Properties.IsLeftButtonPressed)
         {
-            CHRBankViewModel cvm = mvm.CHRBankViewModel;
-            EditorActionHandler.Do(new SetMetatileTileAction(mvm.SelectedMetatileViewModel.MetatileIndex, (int)tileIndex, mvm.SelectedMetatileViewModel.GetMetatileFromSet(mvm.LevelViewModel.Level.MetatileSet).Tiles[tileIndex], cvm.SelectedTileIndex), mvm);
-            Repaint();
+            if (mvm.CHRBankViewModel.SelectedTileIndex >= 0)
+            {
+                CHRBankViewModel cvm = mvm.CHRBankViewModel;
+                EditorActionHandler.Do(new SetMetatileTileAction(mvm.SelectedMetatileViewModel.MetatileIndex, (int)tileIndex, mvm.SelectedMetatileViewModel.GetMetatileFromSet(mvm.LevelViewModel.Level.MetatileSet).Tiles[tileIndex], cvm.SelectedTileIndex), mvm);
+                Repaint();
+            }
+        }
+        else if (point.Properties.IsRightButtonPressed)
+        {
+            EditorActionHandler.Do(new PickCHRTileAction(mvm.LevelViewModel.Level.MetatileSet.Metatiles[(int) mvm.SelectedMetatileViewModel.MetatileIndex].Tiles[tileIndex], mvm.CHRBankViewModel.SelectedTileIndex), mvm);
+            
         }
     }
 
