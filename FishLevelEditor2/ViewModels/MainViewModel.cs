@@ -155,4 +155,10 @@ public class MainViewModel : ViewModelBase
     {
         OpenExport?.Invoke(this, new EventArgs());
     }
+
+    public void SetPaletteColor(uint paletteIndex, uint colorIndex, uint color)
+    {
+        uint previousColor = LevelViewModel.Level.BackgroundPalettes[paletteIndex].Colors[colorIndex];
+        EditorActionHandler.Do(new SetPaletteColorAction(paletteIndex, colorIndex, previousColor, color), this);
+    }
 }

@@ -83,7 +83,7 @@ public partial class MainWindow : Window
         if (EditorActionHandler.UnsavedChanges)
         {
             Title = "Fish Level Editor v2.0.0 *";
-        } 
+        }
         else
         {
             Title = "Fish Level Editor v2.0.0";
@@ -434,9 +434,18 @@ public partial class MainWindow : Window
         {
             selectedColor = 0x0F;
         }
-        uint previousColor = mvm.LevelViewModel.Level.BackgroundPalettes[mvm.PalettesViewModel.SelectedPaletteIndex].Colors[mvm.PalettesViewModel.SelectedPaletteColorIndex];
-
-        EditorActionHandler.Do(new SetPaletteColorAction(mvm.PalettesViewModel.SelectedPaletteIndex, mvm.PalettesViewModel.SelectedPaletteColorIndex, previousColor, selectedColor), mvm);
+        if (mvm.PalettesViewModel.SelectedPaletteColorIndex == 0)
+        {
+            // universal background color
+            for (int i = 0; i < mvm.LevelViewModel.Level.BackgroundPalettes.Length; i++)
+            {
+                mvm.SetPaletteColor((uint) i, mvm.PalettesViewModel.SelectedPaletteColorIndex, selectedColor);
+            }
+        }
+        else
+        {
+            mvm.SetPaletteColor(mvm.PalettesViewModel.SelectedPaletteIndex, mvm.PalettesViewModel.SelectedPaletteColorIndex, selectedColor);
+        }
         Repaint();
     }
 
