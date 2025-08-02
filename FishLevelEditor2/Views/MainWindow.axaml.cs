@@ -401,7 +401,14 @@ public partial class MainWindow : Window
                 case 1:
                     break;
                 case 2:
-                    mvm.MoveEntry(e.GetPosition(MainLevelBitmap));
+                    if (mvm.GetEntryAtPosition(e.GetPosition(MainLevelBitmap)))
+                    {
+                        EntriesListBox.SelectedItem = mvm.EntriesViewModel.SelectedEntry;
+                    }
+                    else
+                    {
+                        mvm.MoveEntry(e.GetPosition(MainLevelBitmap));
+                    }
                     break;
                 default:
                     break;
@@ -439,7 +446,7 @@ public partial class MainWindow : Window
             // universal background color
             for (int i = 0; i < mvm.LevelViewModel.Level.BackgroundPalettes.Length; i++)
             {
-                mvm.SetPaletteColor((uint) i, mvm.PalettesViewModel.SelectedPaletteColorIndex, selectedColor);
+                mvm.SetPaletteColor((uint)i, mvm.PalettesViewModel.SelectedPaletteColorIndex, selectedColor);
             }
         }
         else

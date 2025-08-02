@@ -107,7 +107,7 @@ public class MainViewModel : ViewModelBase
         EditorActionHandler.Do(new PickMetatileAction(SelectedMetatileViewModel.MetatileIndex, 0, posX, posY), this);
         Repaint?.Invoke(this, new EventArgs());
     }
-    
+
     public void MoveEntry(Point mousePos)
     {
         Level level = LevelViewModel.Level;
@@ -160,5 +160,22 @@ public class MainViewModel : ViewModelBase
     {
         uint previousColor = LevelViewModel.Level.BackgroundPalettes[paletteIndex].Colors[colorIndex];
         EditorActionHandler.Do(new SetPaletteColorAction(paletteIndex, colorIndex, previousColor, color), this);
+    }
+
+    public bool GetEntryAtPosition(Point mousePos)
+    {
+        Level level = LevelViewModel.Level;
+        uint tileIndex = GetMouseTileIndex(mousePos, 16, level.Width, (uint)(level.Width * level.Height));
+        int posY = (int)tileIndex / level.Width;
+        int posX = (int)tileIndex % level.Width;
+
+        LevelEntry entry = level.GetEntryByPosition(posX, posY);
+
+        if (entry is not null)
+        {
+            EntriesViewModel.SelectedEntry = entry;
+            return true;
+        }
+        return false;
     }
 }

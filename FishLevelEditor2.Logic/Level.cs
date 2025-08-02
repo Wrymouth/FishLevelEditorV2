@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
@@ -181,6 +182,11 @@ namespace FishLevelEditor2.Logic
                 ScreenMetatiles.RemoveAt(ScreenMetatiles.Count - 1);
             }
             Width -= amount;
+        }
+
+        public LevelEntry GetEntryByPosition(int posX, int posY)
+        {
+            return Entries.FirstOrDefault((e) => e.PosX == posX && e.PosY == posY, null);
         }
 
         public void Export(string folderPath)
