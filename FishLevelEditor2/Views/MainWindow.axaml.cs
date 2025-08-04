@@ -8,6 +8,7 @@ using FishLevelEditor2.Logic;
 using FishLevelEditor2.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using static FishLevelEditor2.Logic.Metatile;
 
@@ -21,6 +22,7 @@ public partial class MainWindow : Window
     public MainWindow(int levelIndex)
     {
         InitializeComponent();
+
         Closing += MainWindow_Closing;
         DataContext = new MainViewModel(Session.Project.Levels[levelIndex]);
         MainViewModel mvm = DataContext as MainViewModel;
@@ -48,6 +50,12 @@ public partial class MainWindow : Window
 
         Repaint();
         SetLogMessage($"Successfully loaded level {mvm.LevelViewModel.Level.Name}");
+    }
+
+    // constructor for preview window
+    public MainWindow()
+    {
+        InitializeComponent();
     }
 
     private async void MainWindow_Closing(object? sender, WindowClosingEventArgs e)
@@ -89,12 +97,6 @@ public partial class MainWindow : Window
         {
             Title = "Fish Level Editor v2.0.0";
         }
-    }
-
-    // constructor for preview window
-    public MainWindow()
-    {
-        InitializeComponent();
     }
 
     private async void HandleSaveAs(object sender, EventArgs e)
