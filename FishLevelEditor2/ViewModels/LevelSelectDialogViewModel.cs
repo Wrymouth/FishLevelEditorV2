@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace FishLevelEditor2.ViewModels
 {
-    public delegate void LoadLevelEventHandler(object sender, LoadLevelEventArgs e);
     public class LevelSelectDialogViewModel : ViewModelBase
     {
-        public event LoadLevelEventHandler LoadLevelSuccess;
+        public WindowManager.NextWindowType NextWindow { get; set; }
 
         public Project Project { get; set; }
 
@@ -22,11 +21,8 @@ namespace FishLevelEditor2.ViewModels
 
         public void LoadLevel(int levelIndex)
         {
-            Project.MostRecentLevelIndex = levelIndex;
-            LoadLevelSuccess?.Invoke(
-                this,
-                new LoadLevelEventArgs(levelIndex)
-            );
+            Session.Project.MostRecentLevelIndex = levelIndex;
+            NextWindow = WindowManager.NextWindowType.Main;
         }
     }
 }

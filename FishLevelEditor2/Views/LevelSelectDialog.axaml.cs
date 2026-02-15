@@ -20,11 +20,11 @@ public partial class LevelSelectDialog : Window
         LevelSelectDialogViewModel lsdViewModel = DataContext as LevelSelectDialogViewModel;
         int selectedLevelIndex = LevelsListBox.SelectedIndex;
         lsdViewModel.LoadLevel(selectedLevelIndex);
+        Close();
     }
 
     private async void CreateLevelButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        LevelSelectDialogViewModel lsdViewModel = DataContext as LevelSelectDialogViewModel;
         NewLevelDialogViewModel nldViewModel = new();
         NewLevelDialog newLevelDialog = new()
         {

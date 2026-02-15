@@ -19,6 +19,8 @@ public partial class MainWindow : Window
     private readonly HashSet<Avalonia.Input.Key> keysHeld = new();
     private readonly DispatcherTimer keyRepeatTimer;
 
+    public WindowManager.NextWindowType NextWindow { get; set; }
+
     public MainWindow(int levelIndex)
     {
         InitializeComponent();
@@ -491,5 +493,11 @@ public partial class MainWindow : Window
             EditorActionHandler.Do(new RemoveEntryAction(levelEntry), mvm);
         }
         Repaint();
+    }
+
+    private void ChangeLevelMenuItem_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        NextWindow = WindowManager.NextWindowType.LevelSelect;
+        Close();
     }
 }

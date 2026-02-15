@@ -17,6 +17,7 @@ public partial class OpenProjectDialog : Window
     {
         var opdViewModel = DataContext as OpenProjectDialogViewModel;
         opdViewModel.CreateProject();
+        Close();
     }
 
     private async void LoadProjectButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -33,10 +34,11 @@ public partial class OpenProjectDialog : Window
             AllowMultiple = false
         });
 
-        if (files.Count == 1)
+        if (files.Count > 0)
         {
             string filePath = files[0].Path.AbsolutePath;
             opdViewModel.LoadProject(filePath);
+            Close();
         }
     }
 }

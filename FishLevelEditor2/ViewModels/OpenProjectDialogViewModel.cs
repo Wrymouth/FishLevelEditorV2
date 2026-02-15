@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace FishLevelEditor2.ViewModels
 {
-    public delegate void OpenProjectEventHandler(object sender, OpenProjectEventArgs e);
     public class OpenProjectDialogViewModel : ViewModelBase
     {
-        public event OpenProjectEventHandler OpenProjectSuccess;
+        public WindowManager.NextWindowType NextWindow { get; set; }
 
         public void CreateProject()
         {
@@ -30,10 +29,7 @@ namespace FishLevelEditor2.ViewModels
         public void OpenProject(Project project)
         {
             Session.Project = project;
-            OpenProjectSuccess?.Invoke(
-              this,
-              new OpenProjectEventArgs(project)
-            );
+            NextWindow = WindowManager.NextWindowType.LevelSelect;
         }
     }
 }
