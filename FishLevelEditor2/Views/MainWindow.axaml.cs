@@ -500,4 +500,10 @@ public partial class MainWindow : Window
         NextWindow = WindowManager.NextWindowType.LevelSelect;
         Close();
     }
+
+    private void ChangeProjectMenuItem_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        NextWindow = WindowManager.NextWindowType.OpenProject;
+        Close();
+    }
 }

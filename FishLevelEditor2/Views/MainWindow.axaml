@@ -37,6 +37,7 @@
 
       <Menu Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" >
         <MenuItem Header="File" Name="FileMenu">
+          <MenuItem Header="Change Project" Click="ChangeProjectMenuItem_Click"></MenuItem>
           <MenuItem Header="Change Level" Click="ChangeLevelMenuItem_Click"></MenuItem>
           <Separator/>
           <MenuItem Header="Save" x:CompileBindings="False" Command="{Binding SaveCommand}"></MenuItem>
