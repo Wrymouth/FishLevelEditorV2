@@ -8,6 +8,7 @@ using FishLevelEditor2.Logic;
 using FishLevelEditor2.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using static FishLevelEditor2.Logic.Metatile;
@@ -34,6 +35,8 @@ public partial class MainWindow : Window
         LevelScrollViewer.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Hidden;
         LevelScrollViewer.VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Hidden;
 
+        Loaded += MainWindow_Loaded;
+
         mvm.Repaint += HandleRepaint;
         mvm.OpenSaveAs += HandleSaveAs;
         mvm.OpenExport += HandleExport;
@@ -50,8 +53,52 @@ public partial class MainWindow : Window
 
         SetLevelImageDimensions();
 
-        Repaint();
         SetLogMessage($"Successfully loaded level {mvm.LevelViewModel.Level.Name}");
+    }
+
+    private void MainWindow_Loaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        MainViewModel mvm = DataContext as MainViewModel;
+        try
+        {
+            mvm.LevelViewModel.Level.BackgroundCHR.Decode();
+        }
+        catch (FileNotFoundException fe)
+        {
+            MessageDialog chrErrorDialog = new MessageDialog("CHR file not found!\nClick \"Replace\" in the main editor to\nselect a new one.");
+            chrErrorDialog.Title = "File not found";
+            chrErrorDialog.ShowDialog(this);
+        }
+        catch (DirectoryNotFoundException de)
+        {
+            MessageDialog chrErrorDialog = new MessageDialog("CHR file not found! Click \"Replace\" in the main editor to select a new one.");
+            chrErrorDialog.Title = "File not found";
+            chrErrorDialog.ShowDialog(this);
+        }
+        Repaint();
+    }
+
+    private async void OpenLevelCHRFilePicker(Level level)
+    {
+        // Get top level from the current control. Alternatively, you can use Window reference instead.
+        var topLevel = GetTopLevel(this);
+
+        var filter = new FilePickerFileType("CHR Files");
+        filter.Patterns = new[] { "*.chr" };
+
+        // Start async operation to open the dialog.
+        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Open CHR file",
+            AllowMultiple = false,
+            FileTypeFilter = new[] { filter }
+        });
+
+        if (files.Count > 0)
+        {
+            level.BackgroundCHR = new(files[0].Path.AbsolutePath);
+        }
+        Repaint();
     }
 
     // constructor for preview window
@@ -254,6 +301,7 @@ public partial class MainWindow : Window
     {
         MainViewModel mvm = (DataContext as MainViewModel);
         MetatileSetViewModel metatileSetViewModel = mvm.MetatileSetViewModel;
+        metatileSetViewModel.MetatileSetBitmap.CHRBank = mvm.LevelViewModel.Level.BackgroundCHR;
         metatileSetViewModel.Display(mvm.LevelViewModel.Level.BackgroundPalettes[mvm.PalettesViewModel.SelectedPaletteIndex]);
         MetatileSetBitmap.Bitmap = metatileSetViewModel.MetatileSetBitmap.Bitmap;
         MetatileSetBitmap.InvalidateVisual();
@@ -263,6 +311,7 @@ public partial class MainWindow : Window
     {
         MainViewModel mvm = (DataContext as MainViewModel);
         SelectedMetatileViewModel selectedMetatileViewModel = mvm.SelectedMetatileViewModel;
+        selectedMetatileViewModel.SelectedMetatileBitmap.CHRBank = mvm.LevelViewModel.Level.BackgroundCHR;
         selectedMetatileViewModel.Display(mvm.LevelViewModel.Level.BackgroundPalettes[mvm.PalettesViewModel.SelectedPaletteIndex], mvm.LevelViewModel.Level.MetatileSet);
         SelectedMetatileBitmap.Bitmap = selectedMetatileViewModel.SelectedMetatileBitmap.Bitmap;
         SelectedMetatileBitmap.InvalidateVisual();
@@ -272,6 +321,7 @@ public partial class MainWindow : Window
     {
         MainViewModel mvm = (DataContext as MainViewModel);
         CHRBankViewModel chrBankViewModel = mvm.CHRBankViewModel;
+        chrBankViewModel.CHRBankBitmap.CHRBank = mvm.LevelViewModel.Level.BackgroundCHR;
         chrBankViewModel.Display(mvm.LevelViewModel.Level.BackgroundPalettes[mvm.PalettesViewModel.SelectedPaletteIndex]);
         CHRBitmap.Bitmap = chrBankViewModel.CHRBankBitmap.Bitmap;
         CHRBitmap.InvalidateVisual();
@@ -279,8 +329,8 @@ public partial class MainWindow : Window
 
     private void ReplaceCHRButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        LevelSelectDialog levelSelectDialog = new();
-
+        MainViewModel mvm = (DataContext as MainViewModel);
+        OpenLevelCHRFilePicker(mvm.LevelViewModel.Level);
     }
 
     private void AddMetatileButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -338,8 +388,8 @@ public partial class MainWindow : Window
         }
         else if (point.Properties.IsRightButtonPressed)
         {
-            EditorActionHandler.Do(new PickCHRTileAction(mvm.LevelViewModel.Level.MetatileSet.Metatiles[(int) mvm.SelectedMetatileViewModel.MetatileIndex].Tiles[tileIndex], mvm.CHRBankViewModel.SelectedTileIndex), mvm);
-            
+            EditorActionHandler.Do(new PickCHRTileAction(mvm.LevelViewModel.Level.MetatileSet.Metatiles[(int)mvm.SelectedMetatileViewModel.MetatileIndex].Tiles[tileIndex], mvm.CHRBankViewModel.SelectedTileIndex), mvm);
+
         }
     }
 

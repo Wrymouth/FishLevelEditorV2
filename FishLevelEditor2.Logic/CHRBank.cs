@@ -13,10 +13,6 @@ namespace FishLevelEditor2.Logic
             set
             {
                 _filePath = value;
-                if (_filePath is not null)
-                {
-                    Decode();
-                }
             }
         }
 
@@ -35,22 +31,44 @@ namespace FishLevelEditor2.Logic
 
         public CHRBank(string filePath)
         {
-            Tiles = [];
+            ClearCHR();
             FilePath = filePath;
+            Decode();
         }
 
         public CHRBank()
         {
-            Tiles = [];
+            ClearCHR();
         }
 
-        private void Decode()
+        private void ClearCHR()
+        {
+            const int AMOUNT_PIXELS_PER_TILE = 64;
+            Tiles = [];
+
+            for (int i = 0; i < 256; i++)
+            {
+                uint[] tilePixels = new uint[64];
+                for (int j = 0; j < 8; j++)
+                {
+                    // take each bit from byte X and each bit from byte X + 8, then shift the latter left once and OR the two
+                    for (int k = 7; k >= 0; k--)
+                    {
+                        tilePixels[(j * 8) + (7 - k)] = 0;
+                    }
+                }
+                Tiles.Add(new Tile(tilePixels));
+            }
+        }
+
+        public void Decode()
         {
             const int ONE_KB = 1024;
             const int AMOUNT_PIXELS_PER_TILE = 64;
             const int AMOUNT_TILES_PER_KB = 64;
             // Open the file to read from.
             byte[] chrBytes = File.ReadAllBytes(FilePath);
+            Tiles = [];
             uint tileIndex = 0;
             int chrIndex = 0;
             FileInfo chrInfo = new(FilePath);

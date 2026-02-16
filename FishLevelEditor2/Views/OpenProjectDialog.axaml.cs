@@ -27,11 +27,15 @@ public partial class OpenProjectDialog : Window
         // Get top level from the current control. Alternatively, you can use Window reference instead.
         var topLevel = GetTopLevel(this);
 
+        var filter = new FilePickerFileType("JSON Project Files");
+        filter.Patterns = new[] { "*.json" };
+
         // Start async operation to open the dialog.
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "Open Project File",
-            AllowMultiple = false
+            AllowMultiple = false,
+            FileTypeFilter = new[] { filter }
         });
 
         if (files.Count > 0)
