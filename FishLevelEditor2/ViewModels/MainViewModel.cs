@@ -184,7 +184,7 @@ public class MainViewModel : ViewModelBase
         return false;
     }
 
-    internal bool GetObjectAtPosition(Point mousePos)
+    public bool GetObjectAtPosition(Point mousePos)
     {
         Level level = LevelViewModel.Level;
         int tileIndex = GetMouseTileIndex(mousePos, 16, level.Width, level.Width * level.Height);
@@ -195,10 +195,8 @@ public class MainViewModel : ViewModelBase
 
         if (levelObject is not null)
         {
-            // MAKE EDITORACTION
-
-            //SelectedObjectViewModel.SelectedObject = levelObject;
-            //SelectedObjectViewModel.SelectedObjectDefinition = -1;
+            SelectedObjectViewModel.SelectedObject = levelObject;
+            SelectedObjectViewModel.SelectedObjectDefinition = -1;
             return true;
         }
         return false;
@@ -221,5 +219,17 @@ public class MainViewModel : ViewModelBase
             EditorActionHandler.Do(new AddObjectToLevelAction(objectDefinition, posX, posY, varValue), this);
             Repaint?.Invoke(this, new EventArgs());
         }
+    }
+
+    public void MoveObject(Point mousePos)
+    {
+        Level level = LevelViewModel.Level;
+        int tileIndex = GetMouseTileIndex(mousePos, 16, level.Width, level.Width * level.Height);
+        int posY = tileIndex / level.Width;
+        int posX = tileIndex % level.Width;
+
+        EditorActionHandler.Do(new MoveObjectAction(SelectedObjectViewModel.SelectedObject.PosX, SelectedObjectViewModel.SelectedObject.PosY, posX, posY, SelectedObjectViewModel.SelectedObject), this);
+        SelectedObjectViewModel.SelectedObject = null; // clear
+        Repaint?.Invoke(this, new EventArgs());
     }
 }

@@ -74,7 +74,7 @@
 					</Grid.RowDefinitions>
 					<Button Click="AddRowAboveButton_Click" Grid.Column="1" Grid.Row="0" Name="AddRowAboveButton" Content="+"/>
 					<Button Click="AddColumnLeftButton_Click" Grid.Column="0" Grid.Row="1" Name="AddColumnLeftButton" Content="+"/>
-					<controls:LevelViewControl PointerPressed="MainLevelBitmap_PointerPressed" PointerReleased="MainLevelBitmap_PointerReleased" PointerMoved="MainLevelBitmap_PointerMoved" Grid.Column="1" Grid.Row="1" Name="MainLevelBitmap"/>
+					<controls:LevelViewControl PointerPressed="MainLevelBitmap_PointerPressed" PointerMoved="MainLevelBitmap_PointerMoved" Grid.Column="1" Grid.Row="1" Name="MainLevelBitmap"/>
 					<Button Click="AddColumnRightButton_Click" Grid.Column="2" Grid.Row="1" Name="AddColumnRightButton" Content="+"/>
 					<Button Click="AddRowBelowButton_Click" Grid.Column="1" Grid.Row="2" Name="AddRowBelowButton" Content="+"/>
 				</Grid>

@@ -488,16 +488,18 @@ public partial class MainWindow : Window
                     mvm.PlaceMetatileInLevel(e.GetPosition(MainLevelBitmap));
                     break;
                 case 1: // objects
-                    if (mvm.GetObjectAtPosition(e.GetPosition(MainLevelBitmap)))
+                    if (!mvm.GetObjectAtPosition(e.GetPosition(MainLevelBitmap)))
                     {
-
+                        if (mvm.SelectedObjectViewModel.SelectedObject is not null)
+                        {
+                            mvm.MoveObject(e.GetPosition(MainLevelBitmap));
+                        }
+                        else if (mvm.SelectedObjectViewModel.SelectedObjectDefinition >= 0)
+                        {
+                            mvm.PlaceObjectInLevel(e.GetPosition(MainLevelBitmap), SelectedObjectDefVarValueTextBox.Text);
+                        }
                     }
-                    else
-                    {
-                        mvm.PlaceObjectInLevel(e.GetPosition(MainLevelBitmap), SelectedObjectDefVarValueTextBox.Text);
-                    }
-
-                        break;
+                    break;
                 case 2: // entries
                     if (mvm.GetEntryAtPosition(e.GetPosition(MainLevelBitmap)))
                     {
@@ -516,11 +518,6 @@ public partial class MainWindow : Window
         {
             mvm.PickMetatile(e.GetPosition(MainLevelBitmap));
         }
-
-    }
-
-    private void MainLevelBitmap_PointerReleased(object? sender, Avalonia.Input.PointerReleasedEventArgs e)
-    {
 
     }
 

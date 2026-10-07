@@ -57,24 +57,24 @@ namespace FishLevelEditor2.Controls
 
         private void DrawGrid(SKCanvas canvas)
         {
-            //int bitmapWidth = LevelViewModel.LevelBitmap.Bitmap.Width;
-            //int bitmapHeight = LevelViewModel.LevelBitmap.Bitmap.Height;
+            int bitmapWidth = (int) Width;
+            int bitmapHeight = (int) Height;
 
-            //int cols = bitmapWidth / TileSize;
-            //int rows = bitmapHeight / TileSize;
+            int cols = bitmapWidth / TileSize;
+            int rows = bitmapHeight / TileSize;
 
-            //using var paint = new SKPaint
-            //{
-            //    Color = new SKColor(255, 255, 255, 60),
-            //    IsStroke = true,
-            //    StrokeWidth = 1
-            //};
+            using var paint = new SKPaint
+            {
+                Color = new SKColor(255, 255, 255, 60),
+                IsStroke = true,
+                StrokeWidth = 1
+            };
 
-            //for (int x = 0; x <= cols; x++)
-            //    canvas.DrawLine(x * TileSize, 0, x * TileSize, LevelViewModel.LevelBitmap.Bitmap.Height, paint);
+            for (int x = 0; x <= cols; x++)
+                canvas.DrawLine(x * TileSize, 0, x * TileSize, (float) Height, paint);
 
-            //for (int y = 0; y <= rows; y++)
-            //    canvas.DrawLine(0, y * TileSize, LevelViewModel.LevelBitmap.Bitmap.Width, y * TileSize, paint);
+            for (int y = 0; y <= rows; y++)
+                canvas.DrawLine(0, y * TileSize, (float) Width, y * TileSize, paint);
         }
 
         private SKBitmap CropObjectBitmap(SKBitmap bitmap)
