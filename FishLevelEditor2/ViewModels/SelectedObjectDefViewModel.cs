@@ -17,6 +17,7 @@ namespace FishLevelEditor2.ViewModels
 
         public SelectedObjectDefViewModel()
         {
+            SelectedObject = null;
             SelectedObjectDefinition = -1;
         }
 

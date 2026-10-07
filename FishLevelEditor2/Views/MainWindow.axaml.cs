@@ -382,7 +382,14 @@ public partial class MainWindow : Window
 
     private void SelectedObjectDefNameTextBox_TextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e)
     {
-
+        MainViewModel mvm = (DataContext as MainViewModel);
+        if (mvm.SelectedObjectViewModel.SelectedObject is not null)
+        {
+            mvm.SelectedObjectViewModel.SelectedObject.Definition.Name = SelectedObjectDefNameTextBox.Text;
+        } else if (mvm.SelectedObjectViewModel.SelectedObjectDefinition >= 0)
+        {
+            Session.Project.LevelObjectDefinitions[mvm.SelectedObjectViewModel.SelectedObjectDefinition].Name = SelectedObjectDefNameTextBox.Text;
+        }
     }
 
     private void SelectedObjectDefVarValueTextBox_TextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e)
@@ -499,10 +506,6 @@ public partial class MainWindow : Window
                         {
                             mvm.PlaceObjectInLevel(e.GetPosition(MainLevelBitmap), SelectedObjectDefVarValueTextBox.Text);
                         }
-                    }
-                    else
-                    {
-                        mvm.SelectedObjectViewModel.SelectedObjectDefinition = -1;
                     }
                     break;
                 case 2: // entries
