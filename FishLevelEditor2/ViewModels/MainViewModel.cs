@@ -28,6 +28,8 @@ public class MainViewModel : ViewModelBase
     public PalettesViewModel PalettesViewModel { get; set; }
     public LevelViewModel LevelViewModel { get; set; }
     public EntriesViewModel EntriesViewModel { get; set; }
+    public ObjectsViewModel ObjectsViewModel { get; set; }
+    public SelectedObjectDefViewModel SelectedObjectViewModel { get; set; }
     public ReactiveCommand<Unit, Unit> UndoCommand { get; }
     public ReactiveCommand<Unit, Unit> RedoCommand { get; }
     public ReactiveCommand<Unit, Unit> SaveCommand { get; }
@@ -44,6 +46,8 @@ public class MainViewModel : ViewModelBase
         MasterPaletteViewModel = new();
         PalettesViewModel = new(level.BackgroundPalettes);
         EntriesViewModel = new(level.Entries);
+        ObjectsViewModel = new(Session.Project.LevelObjectDefinitions);
+        SelectedObjectViewModel = new();
         UndoCommand = ReactiveCommand.Create(Undo);
         RedoCommand = ReactiveCommand.Create(Redo);
         SaveCommand = ReactiveCommand.Create(Save);
@@ -57,12 +61,12 @@ public class MainViewModel : ViewModelBase
 
     }
 
-    public uint GetMouseTileIndex(Point mousePos, int tileSize, int tilesPerRow, uint maxTileIndex)
+    public int GetMouseTileIndex(Point mousePos, int tileSize, int tilesPerRow, int maxTileIndex)
     {
         const int BITMAP_SCALE = 2;
         int posX = (int)mousePos.X / BITMAP_SCALE;
         int posY = (int)mousePos.Y / BITMAP_SCALE;
-        uint tileIndex = (uint)(posY / tileSize * tilesPerRow + (posX / tileSize));
+        int tileIndex = posY / tileSize * tilesPerRow + (posX / tileSize);
         if (tileIndex > maxTileIndex)
         {
             tileIndex = maxTileIndex;
@@ -73,7 +77,7 @@ public class MainViewModel : ViewModelBase
     public void PlaceMetatileInLevel(Point mousePos)
     {
         Level level = LevelViewModel.Level;
-        uint tileIndex = GetMouseTileIndex(mousePos, 16, level.Width, (uint)(level.Width * level.Height));
+        int tileIndex = GetMouseTileIndex(mousePos, 16, level.Width, level.Width * level.Height);
         if (SelectedMetatileViewModel.MetatileIndex >= 0)
         {
             int posY = (int)tileIndex / level.Width;
@@ -84,7 +88,8 @@ public class MainViewModel : ViewModelBase
             }
             ScreenMetatile selectedScreenMetatile = level.ScreenMetatiles[posX][posY];
             uint metatileIndex = SelectedMetatileViewModel.MetatileIndex;
-            if (selectedScreenMetatile.mi == metatileIndex && selectedScreenMetatile.pi == 0)
+            uint paletteIndex = PalettesViewModel.SelectedPaletteIndex;
+            if (selectedScreenMetatile.mi == metatileIndex && selectedScreenMetatile.pi == paletteIndex)
             {
                 // do not process this action, it's a repeat
                 return;
@@ -97,23 +102,23 @@ public class MainViewModel : ViewModelBase
     public void PickMetatile(Point mousePos)
     {
         Level level = LevelViewModel.Level;
-        uint tileIndex = GetMouseTileIndex(mousePos, 16, level.Width, (uint)(level.Width * level.Height));
-        int posY = (int)tileIndex / level.Width;
-        int posX = (int)tileIndex % level.Width;
+        int tileIndex = GetMouseTileIndex(mousePos, 16, level.Width, level.Width * level.Height);
+        int posY = tileIndex / level.Width;
+        int posX = tileIndex % level.Width;
         if (posY >= level.Height || posX >= level.Width)
         {
             return;
         }
-        EditorActionHandler.Do(new PickMetatileAction(SelectedMetatileViewModel.MetatileIndex, 0, posX, posY), this);
+        EditorActionHandler.Do(new PickMetatileAction(SelectedMetatileViewModel.MetatileIndex, PalettesViewModel.SelectedPaletteIndex, posX, posY), this);
         Repaint?.Invoke(this, new EventArgs());
     }
 
     public void MoveEntry(Point mousePos)
     {
         Level level = LevelViewModel.Level;
-        uint tileIndex = GetMouseTileIndex(mousePos, 16, level.Width, (uint)(level.Width * level.Height));
-        int posY = (int)tileIndex / level.Width;
-        int posX = (int)tileIndex % level.Width;
+        int tileIndex = GetMouseTileIndex(mousePos, 16, level.Width, level.Width * level.Height);
+        int posY = tileIndex / level.Width;
+        int posX = tileIndex % level.Width;
         if (EntriesViewModel.SelectedEntry is not null)
         {
             EditorActionHandler.Do(new MoveEntryAction(EntriesViewModel.SelectedEntry.PosX, EntriesViewModel.SelectedEntry.PosY, posX, posY, EntriesViewModel.SelectedEntry), this);
@@ -165,7 +170,7 @@ public class MainViewModel : ViewModelBase
     public bool GetEntryAtPosition(Point mousePos)
     {
         Level level = LevelViewModel.Level;
-        uint tileIndex = GetMouseTileIndex(mousePos, 16, level.Width, (uint)(level.Width * level.Height));
+        int tileIndex = GetMouseTileIndex(mousePos, 16, level.Width, level.Width * level.Height);
         int posY = (int)tileIndex / level.Width;
         int posX = (int)tileIndex % level.Width;
 
@@ -177,5 +182,44 @@ public class MainViewModel : ViewModelBase
             return true;
         }
         return false;
+    }
+
+    internal bool GetObjectAtPosition(Point mousePos)
+    {
+        Level level = LevelViewModel.Level;
+        int tileIndex = GetMouseTileIndex(mousePos, 16, level.Width, level.Width * level.Height);
+        int posY = tileIndex / level.Width;
+        int posX = tileIndex % level.Width;
+
+        LevelObject levelObject = level.GetObjectByPosition(posX, posY);
+
+        if (levelObject is not null)
+        {
+            // MAKE EDITORACTION
+
+            //SelectedObjectViewModel.SelectedObject = levelObject;
+            //SelectedObjectViewModel.SelectedObjectDefinition = -1;
+            return true;
+        }
+        return false;
+    }
+
+    internal void PlaceObjectInLevel(Point mousePos, string? varValue)
+    {
+        Level level = LevelViewModel.Level;
+        int tileIndex = GetMouseTileIndex(mousePos, 16, level.Width, level.Width * level.Height);
+        if (SelectedObjectViewModel.SelectedObjectDefinition >= 0)
+        {
+            LevelObjectDefinition objectDefinition = Session.Project.LevelObjectDefinitions[SelectedObjectViewModel.SelectedObjectDefinition];
+            int posY = (int)tileIndex / level.Width;
+            int posX = (int)tileIndex % level.Width;
+            if (posY >= level.Height || posX >= level.Width)
+            {
+                return;
+            }
+
+            EditorActionHandler.Do(new AddObjectToLevelAction(objectDefinition, posX, posY, varValue), this);
+            Repaint?.Invoke(this, new EventArgs());
+        }
     }
 }

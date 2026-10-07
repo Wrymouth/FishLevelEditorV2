@@ -9,8 +9,6 @@ using FishLevelEditor2.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using static FishLevelEditor2.Logic.Metatile;
 
 namespace FishLevelEditor2.Views;
@@ -30,6 +28,7 @@ public partial class MainWindow : Window
         DataContext = new MainViewModel(Session.Project.Levels[levelIndex]);
         MainViewModel mvm = DataContext as MainViewModel;
         MainLevelBitmap.LevelViewModel = mvm.LevelViewModel;
+        ObjectsBitmap.ObjectsViewModel = mvm.ObjectsViewModel;
         mvm.SelectedMetatileViewModel.PropertyChanged += SelectedMetatileViewModel_PropertyChanged;
         mvm.SelectedMetatileViewModel.MetatileIndex = 0; // force a PropertyChanged
         LevelScrollViewer.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Hidden;
@@ -267,6 +266,8 @@ public partial class MainWindow : Window
         RepaintLevel();
         RepaintMasterPalette();
         RepaintPalettes();
+        RepaintObjects();
+        RepaintSelectedObject();
     }
 
     private void RepaintPalettes()
@@ -291,8 +292,6 @@ public partial class MainWindow : Window
 
     private void RepaintLevel()
     {
-        MainViewModel mvm = DataContext as MainViewModel;
-        LevelViewModel lvm = mvm.LevelViewModel;
         MainLevelBitmap.InvalidateSurface();
         SetLevelImageDimensions();
     }
@@ -325,6 +324,22 @@ public partial class MainWindow : Window
         chrBankViewModel.Display(mvm.LevelViewModel.Level.BackgroundPalettes[mvm.PalettesViewModel.SelectedPaletteIndex]);
         CHRBitmap.Bitmap = chrBankViewModel.CHRBankBitmap.Bitmap;
         CHRBitmap.InvalidateVisual();
+    }
+
+    private void RepaintObjects()
+    {
+        ObjectsBitmap.InvalidateSurface();
+    }
+
+    private void RepaintSelectedObject()
+    {
+        MainViewModel mvm = (DataContext as MainViewModel);
+        SelectedObjectDefViewModel selectedObjectViewModel = mvm.SelectedObjectViewModel;
+        selectedObjectViewModel.Display();
+        SelectedObjectBitmap.Bitmap = selectedObjectViewModel.SelectedObjectDefinitionBitmap;
+        SelectedObjectBitmap.Width = SelectedObjectBitmap.Bitmap.Width * 2;
+        SelectedObjectBitmap.Height = SelectedObjectBitmap.Bitmap.Height * 2;
+        SelectedObjectBitmap.InvalidateVisual();
     }
 
     private void ReplaceCHRButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -364,6 +379,16 @@ public partial class MainWindow : Window
         }
     }
 
+    private void SelectedObjectDefNameTextBox_TextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e)
+    {
+
+    }
+
+    private void SelectedObjectDefVarValueTextBox_TextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e)
+    {
+
+    }
+
     private void CHRBitmap_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
         MainViewModel mvm = (DataContext as MainViewModel);
@@ -376,7 +401,7 @@ public partial class MainWindow : Window
         MainViewModel mvm = (DataContext as MainViewModel);
         var point = e.GetCurrentPoint(sender as Control);
 
-        uint tileIndex = mvm.GetMouseTileIndex(e.GetPosition(SelectedMetatileBitmap), 8, 2, 3);
+        uint tileIndex = (uint) mvm.GetMouseTileIndex(e.GetPosition(SelectedMetatileBitmap), 8, 2, 3);
         if (point.Properties.IsLeftButtonPressed)
         {
             if (mvm.CHRBankViewModel.SelectedTileIndex >= 0)
@@ -396,7 +421,7 @@ public partial class MainWindow : Window
     private void MetatileSetBitmap_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
         MainViewModel mvm = (DataContext as MainViewModel);
-        uint metatileIndex = mvm.GetMouseTileIndex(e.GetPosition(MetatileSetBitmap), 16, 8, (uint)mvm.LevelViewModel.Level.MetatileSet.Metatiles.Count - 1);
+        uint metatileIndex = (uint) mvm.GetMouseTileIndex(e.GetPosition(MetatileSetBitmap), 16, 8, mvm.LevelViewModel.Level.MetatileSet.Metatiles.Count - 1);
         mvm.SelectedMetatileViewModel.MetatileIndex = metatileIndex;
         Repaint();
     }
@@ -459,12 +484,21 @@ public partial class MainWindow : Window
         {
             switch (EditorTabs.SelectedIndex)
             {
-                case 0:
+                case 0: // tiles
                     mvm.PlaceMetatileInLevel(e.GetPosition(MainLevelBitmap));
                     break;
-                case 1:
-                    break;
-                case 2:
+                case 1: // objects
+                    if (mvm.GetObjectAtPosition(e.GetPosition(MainLevelBitmap)))
+                    {
+
+                    }
+                    else
+                    {
+                        mvm.PlaceObjectInLevel(e.GetPosition(MainLevelBitmap), SelectedObjectDefVarValueTextBox.Text);
+                    }
+
+                        break;
+                case 2: // entries
                     if (mvm.GetEntryAtPosition(e.GetPosition(MainLevelBitmap)))
                     {
                         EntriesListBox.SelectedItem = mvm.EntriesViewModel.SelectedEntry;
@@ -485,6 +519,11 @@ public partial class MainWindow : Window
 
     }
 
+    private void MainLevelBitmap_PointerReleased(object? sender, Avalonia.Input.PointerReleasedEventArgs e)
+    {
+
+    }
+
     private void PaletteBitmap_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
         MainViewModel mvm = (DataContext as MainViewModel);
@@ -492,7 +531,7 @@ public partial class MainWindow : Window
         if (int.TryParse((string)paletteBitmap.DataContext, out int paletteIndex))
         {
             mvm.PalettesViewModel.SelectedPaletteIndex = (uint)paletteIndex;
-            mvm.PalettesViewModel.SelectedPaletteColorIndex = mvm.GetMouseTileIndex(e.GetPosition(paletteBitmap), 8, 4, 3);
+            mvm.PalettesViewModel.SelectedPaletteColorIndex = (uint) mvm.GetMouseTileIndex(e.GetPosition(paletteBitmap), 8, 4, 3);
             Repaint();
         }
     }
@@ -500,7 +539,7 @@ public partial class MainWindow : Window
     private void MasterPaletteBitmap_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
         MainViewModel mvm = (DataContext as MainViewModel);
-        uint selectedColor = mvm.GetMouseTileIndex(e.GetPosition(MasterPaletteBitmap), 8, 16, 63);
+        int selectedColor = mvm.GetMouseTileIndex(e.GetPosition(MasterPaletteBitmap), 8, 16, 63);
         if (selectedColor == 0x0D || selectedColor == 0x1D || (selectedColor & 0x0E) == 0x0E)
         {
             selectedColor = 0x0F;
@@ -510,12 +549,12 @@ public partial class MainWindow : Window
             // universal background color
             for (int i = 0; i < mvm.LevelViewModel.Level.BackgroundPalettes.Length; i++)
             {
-                mvm.SetPaletteColor((uint)i, mvm.PalettesViewModel.SelectedPaletteColorIndex, selectedColor);
+                mvm.SetPaletteColor((uint)i, mvm.PalettesViewModel.SelectedPaletteColorIndex, (uint) selectedColor);
             }
         }
         else
         {
-            mvm.SetPaletteColor(mvm.PalettesViewModel.SelectedPaletteIndex, mvm.PalettesViewModel.SelectedPaletteColorIndex, selectedColor);
+            mvm.SetPaletteColor(mvm.PalettesViewModel.SelectedPaletteIndex, mvm.PalettesViewModel.SelectedPaletteColorIndex, (uint) selectedColor);
         }
         Repaint();
     }
@@ -555,5 +594,43 @@ public partial class MainWindow : Window
     {
         NextWindow = WindowManager.NextWindowType.OpenProject;
         Close();
+    }
+
+    private void ObjectsBitmap_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+    {
+        MainViewModel mvm = (DataContext as MainViewModel);
+        int selectedObjectDefinition = mvm.GetMouseTileIndex(e.GetPosition(ObjectsBitmap), 16, 8, Session.Project.LevelObjectDefinitions.Count - 1);
+        mvm.SelectedObjectViewModel.SelectedObjectDefinition = selectedObjectDefinition;
+        if (selectedObjectDefinition >= 0)
+        {
+            SelectedObjectDefNameTextBox.Text = Session.Project.LevelObjectDefinitions[selectedObjectDefinition].Name;
+            SelectedObjectDefVarNameLabel.Content = Session.Project.LevelObjectDefinitions[selectedObjectDefinition].VarName;
+            mvm.SelectedObjectViewModel.SelectedObject = null; // unset Selected Object
+        }
+        Repaint();
+    }
+
+    private void AddObjectDefinitionButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        NewObjectDefinitionDialogViewModel noddViewModel = new();
+        NewObjectDefinitionDialog newObjectDefinitionDialog = new()
+        {
+            DataContext = noddViewModel
+        };
+        newObjectDefinitionDialog.Closed += NewObjectDefinitionDialog_Closed;
+        newObjectDefinitionDialog.ShowDialog(this);
+
+    }
+
+    private void NewObjectDefinitionDialog_Closed(object? sender, EventArgs e)
+    {
+        NewObjectDefinitionDialogViewModel noddViewModel = (sender as NewObjectDefinitionDialog).DataContext as NewObjectDefinitionDialogViewModel;
+        if (noddViewModel.CreatedObject is not null)
+        {
+            Session.Project.LevelObjectDefinitions.Add(noddViewModel.CreatedObject);
+            MainViewModel mvm = (DataContext as MainViewModel);
+            mvm.ObjectsViewModel.ObjectDefinitions = new(Session.Project.LevelObjectDefinitions);
+            Repaint();
+        }
     }
 }

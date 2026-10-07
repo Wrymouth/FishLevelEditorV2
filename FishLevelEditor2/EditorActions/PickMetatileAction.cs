@@ -28,13 +28,13 @@ namespace FishLevelEditor2.EditorActions
         {
             ScreenMetatile selectedScreenMetatile = mvm.LevelViewModel.Level.ScreenMetatiles[PosX][PosY];
             mvm.SelectedMetatileViewModel.MetatileIndex = selectedScreenMetatile.mi;
-            // TODO palette
+            mvm.PalettesViewModel.SelectedPaletteIndex = selectedScreenMetatile.pi;
         }
 
         public override void Undo(MainViewModel mvm)
         {
             mvm.SelectedMetatileViewModel.MetatileIndex = PreviousSelectedMetatileIndex;
-            // TODO palette
+            mvm.PalettesViewModel.SelectedPaletteIndex = PreviousSelectedPaletteIndex;
         }
     }
 }

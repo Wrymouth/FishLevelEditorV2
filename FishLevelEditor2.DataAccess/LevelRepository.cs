@@ -218,19 +218,19 @@ namespace FishLevelEditor2.DataAccess
 
         private void WriteLevelObjectRefs(Level level, StreamWriter outputFile)
         {
-            List<LevelObject> exportObjects = level.Objects.OrderBy(obj => obj.Column).ToList();
+            List<LevelObject> exportObjects = level.Objects.OrderBy(obj => obj.PosX).ToList();
 
             outputFile.WriteLine($".byte $00, $00, $00, $00, $00");
             outputFile.WriteLine($"{level.FileName}_objects:");
             foreach (var obj in exportObjects)
             {
-                if (obj.Type == LevelObject.ObjectTypes.Small)
+                if (obj.Definition.Type == LevelObjectDefinition.ObjectTypes.Small)
                 {
                     outputFile.Write("SMALL_");
                 }
                 outputFile.Write("LEVEL_OBJ ");
 
-                outputFile.Write($"${obj.Column:X2}, ${obj.Row:X2}, init_{obj.Name.ToLower()}, ${obj.Var:X2}");
+                outputFile.Write($"${obj.PosX:X2}, ${obj.PosY:X2}, init_{obj.Definition.Name.ToLower()}, ${obj.VarValue:X2}");
                 outputFile.WriteLine();
             }
             outputFile.WriteLine($".byte $00");

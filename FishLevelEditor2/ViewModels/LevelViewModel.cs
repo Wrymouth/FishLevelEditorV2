@@ -2,7 +2,7 @@
 
 namespace FishLevelEditor2.ViewModels
 {
-    public class LevelViewModel
+    public class LevelViewModel : ViewModelBase
     {
         public const int MAX_LEVEL_WIDTH = 256;
         public const int MAX_LEVEL_HEIGHT = 240;

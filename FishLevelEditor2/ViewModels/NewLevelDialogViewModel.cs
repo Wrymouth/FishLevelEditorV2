@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FishLevelEditor2.ViewModels
 {
-    public class NewLevelDialogViewModel
+    public class NewLevelDialogViewModel : ViewModelBase
     {
         public enum ModalResult
         {

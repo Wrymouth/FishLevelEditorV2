@@ -35,7 +35,6 @@ namespace FishLevelEditor2.Logic
             }
         }
         public Palette[] BackgroundPalettes { get; set; }
-        public Palette[] ObjectPalettes { get; set; }
         public ObservableCollection<LevelObject> Objects { get; set; }
         public ObservableCollection<LevelEntry> Entries { get; set; }
         public ObservableCollection<LevelExit> Exits { get; set; }
@@ -46,13 +45,6 @@ namespace FishLevelEditor2.Logic
             MetatileSetIndex = metatileSetIndex;
             BackgroundCHR = new(chrFilePath);
             BackgroundPalettes =
-            [
-                new Palette(0x0F, 0x00, 0x10, 0x30),
-                new Palette(0x0F, 0x05, 0x16, 0x27),
-                new Palette(0x0F, 0x0C, 0x21, 0x32),
-                new Palette(0x0F, 0x0B, 0x1A, 0x29),
-            ];
-            ObjectPalettes =
             [
                 new Palette(0x0F, 0x00, 0x10, 0x30),
                 new Palette(0x0F, 0x05, 0x16, 0x27),
@@ -192,6 +184,17 @@ namespace FishLevelEditor2.Logic
         public void Export(string folderPath)
         {
             LevelRepository.Export(this, folderPath);
+        }
+
+        public LevelObject GetObjectByPosition(int posX, int posY)
+        {
+            return Objects.FirstOrDefault((e) => e.PosX == posX && e.PosY == posY, null);
+
+        }
+
+        public void RemoveObjectByPosition(int posX, int posY)
+        {
+            Objects.Remove(GetObjectByPosition(posX, posY));
         }
     }
 }

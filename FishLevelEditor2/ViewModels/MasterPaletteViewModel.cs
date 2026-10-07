@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FishLevelEditor2.ViewModels
 {
-    public class MasterPaletteViewModel
+    public class MasterPaletteViewModel : ViewModelBase
     {
         public const int MASTER_PALETTE_DISPLAY_WIDTH = 128;
         public const int MASTER_PALETTE_DISPLAY_HEIGHT = 32;

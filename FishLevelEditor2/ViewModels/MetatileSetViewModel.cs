@@ -3,7 +3,7 @@ using FishLevelEditor2.Logic;
 
 namespace FishLevelEditor2.ViewModels
 {
-    public class MetatileSetViewModel
+    public class MetatileSetViewModel : ViewModelBase
     {
         public const int METATILE_SET_IMAGE_WIDTH = 128;
         public const int METATILE_SET_IMAGE_HEIGHT = 512;

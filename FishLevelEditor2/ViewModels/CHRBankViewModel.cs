@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FishLevelEditor2.ViewModels
 {
-    public class CHRBankViewModel
+    public class CHRBankViewModel : ViewModelBase
     {
         public const int CHR_IMAGE_WIDTH  = 128;
         public const int CHR_IMAGE_HEIGHT = 128;

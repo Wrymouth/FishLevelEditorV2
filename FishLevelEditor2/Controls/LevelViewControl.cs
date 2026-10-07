@@ -36,6 +36,7 @@ namespace FishLevelEditor2.Controls
                 DrawGrid(canvas);
             }
 
+            DrawObjects(canvas);
             DrawEntries(canvas);
         }
 
@@ -59,6 +60,18 @@ namespace FishLevelEditor2.Controls
 
             for (int y = 0; y <= rows; y++)
                 canvas.DrawLine(0, y * TileSize, LevelViewModel.LevelBitmap.Bitmap.Width, y * TileSize, paint);
+        }
+
+        private void DrawObjects(SKCanvas canvas)
+        {
+            foreach (var levelObject in LevelViewModel.Level.Objects)
+            {
+                SKBitmap objectBitmap = BitmapUtils.LoadSKBitmapFromFile(levelObject.Definition.SpriteFilePath);
+                float x = levelObject.PosX * TileSize * 2;
+                float y = levelObject.PosY * TileSize * 2;
+                var destRect = new SKRect(x, y, x + (objectBitmap.Width * 2), y + (objectBitmap.Height * 2));
+                canvas.DrawBitmap(objectBitmap, destRect);
+            }
         }
 
         private void DrawEntries(SKCanvas canvas)

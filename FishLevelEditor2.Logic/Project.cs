@@ -12,7 +12,8 @@ namespace FishLevelEditor2.Logic
     {
         public ObservableCollection<Level> Levels { get; set; }
         public List<MetatileSet> MetatileSets { get; set; }
-
+        public List<LevelObjectDefinition> LevelObjectDefinitions { get; set; }
+        
         public int MostRecentLevelIndex { get; set; }
 
         [JsonIgnore]
@@ -24,13 +25,7 @@ namespace FishLevelEditor2.Logic
             Levels = [];
             MetatileSets = [];
             MostRecentLevelIndex = -1;
-        }
-
-        public Project(IProjectRepository projectRepository, ObservableCollection<Level> levels, ObservableCollection<CHRBank> chrBanks, List<MetatileSet> metatileSets)
-        {
-            ProjectRepository = projectRepository;
-            Levels = levels;
-            MetatileSets = metatileSets;
+            LevelObjectDefinitions = [];
         }
 
         // empty constructor for Json Deserialize
