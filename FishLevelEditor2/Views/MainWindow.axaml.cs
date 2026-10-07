@@ -340,6 +340,7 @@ public partial class MainWindow : Window
         SelectedObjectBitmap.Width = SelectedObjectBitmap.Bitmap.Width * 2;
         SelectedObjectBitmap.Height = SelectedObjectBitmap.Bitmap.Height * 2;
         SelectedObjectBitmap.InvalidateVisual();
+        SelectedObjectDefNameTextBox.Text = selectedObjectViewModel.GetName();
     }
 
     private void ReplaceCHRButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -499,6 +500,10 @@ public partial class MainWindow : Window
                             mvm.PlaceObjectInLevel(e.GetPosition(MainLevelBitmap), SelectedObjectDefVarValueTextBox.Text);
                         }
                     }
+                    else
+                    {
+                        mvm.SelectedObjectViewModel.SelectedObjectDefinition = -1;
+                    }
                     break;
                 case 2: // entries
                     if (mvm.GetEntryAtPosition(e.GetPosition(MainLevelBitmap)))
@@ -516,7 +521,24 @@ public partial class MainWindow : Window
         }
         else if (point.Properties.IsRightButtonPressed)
         {
-            mvm.PickMetatile(e.GetPosition(MainLevelBitmap));
+            switch (EditorTabs.SelectedIndex)
+            {
+                case 0: // tiles
+                    mvm.PickMetatile(e.GetPosition(MainLevelBitmap));
+                    break;
+                case 1: // objects
+                    if (mvm.GetObjectAtPosition(e.GetPosition(MainLevelBitmap)))
+                    {
+                        EditorActionHandler.Do(new DeleteObjectFromLevelAction(mvm.SelectedObjectViewModel.SelectedObject), mvm);
+                        mvm.SelectedObjectViewModel.SelectedObject = null;
+                        Repaint();
+                    }
+                    break;
+                case 2: // entries
+                    break;
+                default:
+                    break;
+            }
         }
 
     }

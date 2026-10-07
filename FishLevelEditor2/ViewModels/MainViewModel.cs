@@ -196,7 +196,6 @@ public class MainViewModel : ViewModelBase
         if (levelObject is not null)
         {
             SelectedObjectViewModel.SelectedObject = levelObject;
-            SelectedObjectViewModel.SelectedObjectDefinition = -1;
             return true;
         }
         return false;
