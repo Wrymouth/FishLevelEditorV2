@@ -9,7 +9,7 @@ namespace FishLevelEditor2.Logic
         public List<Metatile> Metatiles { get; set; }
 
         [JsonIgnore]
-        public string FileName { get => Name.ToLower().Replace(" ", "_").Replace("-", ""); }
+        public string FileName { get => Name.ToLower().Replace(" ", "_").Replace("-", "_"); }
 
         public MetatileSet(string name)
         {
