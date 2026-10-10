@@ -230,7 +230,13 @@ namespace FishLevelEditor2.DataAccess
                 }
                 outputFile.Write("LEVEL_OBJ ");
 
-                outputFile.Write($"${obj.PosX:X2}, ${obj.PosY:X2}, init_{obj.Definition.Name.ToLower()}, ${obj.VarValue:X2}");
+                int varValue;
+                if (!int.TryParse(obj.VarValue, out varValue))
+                {
+                    varValue = 0;
+                }
+
+                outputFile.Write($"${obj.PosX:X2}, ${obj.PosY:X2}, init_{obj.Definition.Name.ToLower()}, ${varValue:X2}");
                 outputFile.WriteLine();
             }
             outputFile.WriteLine($".byte $00");
