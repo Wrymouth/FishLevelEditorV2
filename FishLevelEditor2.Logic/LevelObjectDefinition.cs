@@ -18,6 +18,8 @@ namespace FishLevelEditor2.Logic
         public string VarName { get; set; }
 
         public string SpriteFilePath { get; set; }
+
+        public string FileName { get => Name.ToLower().Replace(" ", "_").Replace("-", "_"); }
         public LevelObjectDefinition()
         {
             Type = ObjectTypes.Regular;

@@ -17,7 +17,7 @@ namespace FishLevelEditor2.Logic
         public string Name { get; set; }
 
         [JsonIgnore]
-        public string FileName { get => Name.ToLower().Replace(" ", "_").Replace("-", ""); }
+        public string FileName { get => Name.ToLower().Replace(" ", "_").Replace("-", "_"); }
         public CHRBank BackgroundCHR { get; set; }
 
         public List<List<ScreenMetatile>> ScreenMetatiles { get; set; } // [x][y]
