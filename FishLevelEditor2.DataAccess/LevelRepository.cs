@@ -163,7 +163,7 @@ namespace FishLevelEditor2.DataAccess
 
         private void ExportMetatileColumn(List<List<ScreenMetatile>> screenMetatiles, int column, string fileName)
         {
-            byte[] metatileBytes = new byte[screenMetatiles.Count];
+            byte[] metatileBytes = new byte[screenMetatiles[column].Count];
             for (int i = 0; i < screenMetatiles[column].Count; i++)
             {
                 metatileBytes[i] = (byte)screenMetatiles[column][i].mi;
