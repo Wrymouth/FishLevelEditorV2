@@ -99,6 +99,7 @@ namespace FishLevelEditor2.DataAccess
                     WriteLevelAttrRefs(level, outputFile);
                 }
                 WriteLevelObjectRefs(level, outputFile);
+                WriteLevelPaletteRefs(level, outputFile);
                 WriteLevelEntryRefs(level, outputFile);
                 WriteLevelInitStruct(level, outputFile);
             }
@@ -365,6 +366,15 @@ namespace FishLevelEditor2.DataAccess
             outputFile.WriteLine();
         }
 
+        private void WriteLevelPaletteRefs(Level level, StreamWriter outputFile)
+        {
+            outputFile.WriteLine($"{level.FileName}_palettes:");
+            foreach (var palette in level.BackgroundPalettes)
+            {
+                outputFile.WriteLine($".byte ${palette.Colors[0]:X2}, ${palette.Colors[1]:X2}, ${palette.Colors[2]:X2}, ${palette.Colors[3]:X2}");
+            }
+        }
+
         private void WriteLevelEntryRefs(Level level, StreamWriter outputFile)
         {
             outputFile.WriteLine($"{level.FileName}_entries_x:");
@@ -413,7 +423,7 @@ namespace FishLevelEditor2.DataAccess
             {
                 outputFile.Write($"{level.FileName}_attr_columns_l, {level.FileName}_attr_columns_h, ");
             }
-            outputFile.Write($"{level.MetatileSet.FileName}_0, {level.MetatileSet.FileName}_1, {level.MetatileSet.FileName}_2, {level.MetatileSet.FileName}_3, {level.MetatileSet.FileName}_collision, {level.FileName}_objects, {level.FileName}_entries_x, {level.FileName}_entries_y, {level.FileName}_exits_dest_level, {level.FileName}_exits_dest_entry, {level.FileName}_exits_transition_types");
+            outputFile.Write($"{level.MetatileSet.FileName}_0, {level.MetatileSet.FileName}_1, {level.MetatileSet.FileName}_2, {level.MetatileSet.FileName}_3, {level.MetatileSet.FileName}_collision, {level.FileName}_objects, {level.FileName}_entries_x, {level.FileName}_entries_y, {level.FileName}_exits_dest_entry, {level.FileName}_exits_dest_level, {level.FileName}_exits_transition_types, {level.FileName}_palettes");
             outputFile.WriteLine();
             outputFile.WriteLine();
         }
