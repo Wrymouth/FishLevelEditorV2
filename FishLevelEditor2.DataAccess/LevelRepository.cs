@@ -106,11 +106,6 @@ namespace FishLevelEditor2.DataAccess
 
         private void ExportAttributes(Level level)
         {
-            throw new NotImplementedException();
-        }
-
-        private void ExportLevelTiles(Level level)
-        {
             switch (ExportSettings.Format)
             {
                 case ExportSettings.ExportFormat.Screens:
@@ -128,6 +123,53 @@ namespace FishLevelEditor2.DataAccess
                 default:
                     break;
             }
+        }
+
+        private void ExportLevelTiles(Level level)
+        {
+            switch (ExportSettings.Format)
+            {
+                case ExportSettings.ExportFormat.Screens:
+                    ExportAttrByScreens(level);
+                    break;
+                case ExportSettings.ExportFormat.Columns:
+                    ExportAttrByColumns(level);
+                    break;
+                case ExportSettings.ExportFormat.Rows:
+                    ExportAttrByRows(level);
+                    break;
+                case ExportSettings.ExportFormat.Map:
+                    ExportAttrAsMap(level);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void ExportAttrAsMap(Level level)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ExportAttrByRows(Level level)
+        {
+            for (int i = 0; i < level.ScreenMetatiles[0].Count; i += 2)
+            {
+                ExportAttrRow(level.ScreenMetatiles, i, $"{FolderPath}{level.FileName}_attr_row_{i / 2}.bin");
+            }
+        }
+
+        private void ExportAttrByColumns(Level level)
+        {
+            for (int i = 0; i < level.ScreenMetatiles.Count; i += 2)
+            {
+                ExportAttrColumn(level.ScreenMetatiles, i, $"{FolderPath}{level.FileName}_attr_col_{i / 2}.bin");
+            }
+        }
+
+        private void ExportAttrByScreens(Level level)
+        {
+            throw new NotImplementedException();
         }
 
         private void ExportAsMap(Level level)
@@ -149,6 +191,62 @@ namespace FishLevelEditor2.DataAccess
             {
                 ExportMetatileColumn(level.ScreenMetatiles, i, $"{FolderPath}{level.FileName}_col_{i}.bin");
             }
+        }
+
+        private void ExportAttrRow(List<List<ScreenMetatile>> screenMetatiles, int metatileRow, string fileName)
+        {
+            byte[] attrBytes = new byte[screenMetatiles.Count / 2];
+            for (int i = 0; i < screenMetatiles.Count; i += 2)
+            {
+                uint topLeft = screenMetatiles[i][metatileRow].pi;
+                uint topRight = screenMetatiles[i+1][metatileRow].pi;
+                uint bottomLeft = screenMetatiles[i][metatileRow+1].pi;
+                uint bottomRight = screenMetatiles[i+1][metatileRow+1].pi;
+
+                uint attr = (bottomRight << 6) | (bottomLeft << 4) | (topRight << 2) | (topLeft << 0);
+                attrBytes[i / 2] = (byte)attr;
+            }
+            File.WriteAllBytes(fileName, attrBytes);
+        }
+
+        private void ExportAttrColumn(List<List<ScreenMetatile>> screenMetatiles, int metatileColumn, string fileName)
+        {
+            byte[] attrBytes = new byte[screenMetatiles[metatileColumn].Count / 2];
+            for (int i = 0; i < screenMetatiles[metatileColumn].Count; i += 2)
+            {
+                uint topLeft, topRight, bottomLeft, bottomRight = uint.MaxValue;
+
+                topLeft = screenMetatiles[metatileColumn][i].pi;
+                
+                if (metatileColumn + 1 >= screenMetatiles.Count)
+                {
+                    topRight = 0;
+                    bottomRight = 0;
+                }
+                else
+                {
+                    topRight = screenMetatiles[metatileColumn + 1][i].pi;
+                }
+                
+                if (i + 1 >= screenMetatiles[metatileColumn].Count)
+                {
+                    bottomLeft = 0;
+                    bottomRight = 0;
+                }
+                else
+                {
+                    bottomLeft = screenMetatiles[metatileColumn][i + 1].pi;
+                }
+
+                if (bottomRight == uint.MaxValue)
+                {
+                    bottomRight = screenMetatiles[metatileColumn + 1][i + 1].pi;
+                }
+
+                uint attr = (bottomRight << 6) | (bottomLeft << 4) | (topRight << 2) | (topLeft << 0);
+                attrBytes[i / 2] = (byte)attr;
+            }
+            File.WriteAllBytes(fileName, attrBytes);
         }
 
         private void ExportMetatileRow(List<List<ScreenMetatile>> screenMetatiles, int row, string fileName)
@@ -213,7 +311,31 @@ namespace FishLevelEditor2.DataAccess
 
         private void WriteLevelAttrRefs(Level level, StreamWriter outputFile)
         {
-            throw new NotImplementedException();
+            string level_attr_columns = level.FileName + "_attr_columns";
+
+            outputFile.Write($".define {level_attr_columns}");
+            for (int i = 0; i < level.ScreenMetatiles.Count; i += 2)
+            {
+                outputFile.Write($" {level.FileName}_attr_col_{i/2}");
+                if (i < level.ScreenMetatiles.Count - 2)
+                {
+                    outputFile.Write($",");
+                }
+            }
+            outputFile.WriteLine();
+            outputFile.WriteLine();
+
+            outputFile.WriteLine($"{level_attr_columns}_l:");
+            outputFile.WriteLine($".lobytes {level_attr_columns}");
+            outputFile.WriteLine($"{level_attr_columns}_h:");
+            outputFile.WriteLine($".hibytes {level_attr_columns}");
+
+            for (int i = 0; i < level.ScreenMetatiles.Count; i += 2)
+            {
+                outputFile.WriteLine($"{level.FileName}_attr_col_{i/2}:");
+                outputFile.WriteLine($".incbin \"{level.FileName}_attr_col_{i/2}.bin\"");
+            }
+            outputFile.WriteLine();
         }
 
         private void WriteLevelObjectRefs(Level level, StreamWriter outputFile)
@@ -289,7 +411,7 @@ namespace FishLevelEditor2.DataAccess
             outputFile.Write($".addr {level.FileName}_columns_l, {level.FileName}_columns_h, ");
             if (ExportSettings.SaveAttributes)
             {
-                outputFile.Write($"{level.FileName}_attribute_screens_l, {level.FileName}_attribute_screens_h, ");
+                outputFile.Write($"{level.FileName}_attr_columns_l, {level.FileName}_attr_columns_h, ");
             }
             outputFile.Write($"{level.MetatileSet.FileName}_0, {level.MetatileSet.FileName}_1, {level.MetatileSet.FileName}_2, {level.MetatileSet.FileName}_3, {level.MetatileSet.FileName}_collision, {level.FileName}_objects, {level.FileName}_entries_x, {level.FileName}_entries_y, {level.FileName}_exits_dest_level, {level.FileName}_exits_dest_entry, {level.FileName}_exits_transition_types");
             outputFile.WriteLine();

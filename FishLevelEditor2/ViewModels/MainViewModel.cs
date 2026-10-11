@@ -38,7 +38,7 @@ public class MainViewModel : ViewModelBase
 
     public MainViewModel(Level level)
     {
-        level.LevelRepository = new LevelRepository(new ExportSettings(false, ExportSettings.ExportFormat.Columns));
+        level.LevelRepository = new LevelRepository(new ExportSettings(true, ExportSettings.ExportFormat.Columns));
         LevelViewModel = new(level);
         CHRBankViewModel = new(level.BackgroundCHR);
         MetatileSetViewModel = new(level.MetatileSet, level.BackgroundCHR);
